@@ -19,3 +19,4 @@ E necessario dominar :
 5- consulta dos mapas or titulo do mapa (projetos)
 6-display de popup
 7- consulta temporal (opcional) https://developers.arcgis.com/javascript/latest/sample-code/widgets-timeslider-offset/
+8- colocar logo da pec energia - https://developers.arcgis.com/javascript/latest/sample-code/simple-ui/
