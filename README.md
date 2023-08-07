@@ -11,14 +11,11 @@ possa ser visualizado numa plataforma (site do arcgis) onde o usuario de topogra
 
 ![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/0cdf23f8-5ade-4311-a7e9-a7bcc9cd395a)
 
-1)https://developers.arcgis.com/javascript/latest/sample-code/sketch-geometries/
-2 e 3) https://developers.arcgis.com/javascript/latest/sample-code/widgets-featuretable-popup-interaction/live/
-
 E necessario dominar : 
-1- display de sketch widget
-2- display de feature table
+1- display de sketch widget https://developers.arcgis.com/javascript/latest/sample-code/sketch-geometries/
+2- display de feature table https://developers.arcgis.com/javascript/latest/sample-code/widgets-featuretable-popup-interaction/
 3- edicao de feature table
 4- OAuth
 5- consulta dos mapas or titulo do mapa (projetos)
 6-display de popup
-7- consulta temporal (opcional) 
+7- consulta temporal (opcional) https://developers.arcgis.com/javascript/latest/sample-code/widgets-timeslider-offset/
