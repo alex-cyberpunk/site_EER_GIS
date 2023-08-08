@@ -1,11 +1,5 @@
 # site_topografia
 
-Passos:
--[ ] Descorbrir como dar display de um feature layer por JS no code pen 
--[ ] Adaptar o display de mapas para display em [lista](https://developers.arcgis.com/javascript/latest/sample-code/portalitem-dragndrop/)
--[ ] Adaptar para display temporal dos  [mapas](https://developers.arcgis.com/javascript/latest/sample-code/widgets-timeslider-offset/)
-
-
 Juntar o ambiente de lista do fundiario do sharepoint com a lista de props do comercial fundiario . De tal forma que o envio de arquivos .kmz do comercial fundiario,
 possa ser visualizado numa plataforma (site do arcgis) onde o usuario de topografia possa editar os pedidos , ver os pedidos de cada um dos membros do fundiario . edita-los e entao esperar se foi ou nao aprovado pelo algoritmo de base.
 
