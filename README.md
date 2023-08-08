@@ -14,11 +14,19 @@ possa ser visualizado numa plataforma (site do arcgis) onde o usuario de topogra
 
 E necessario dominar : 
 1- display de sketch widget https://developers.arcgis.com/javascript/latest/sample-code/sketch-geometries/
+
 2- display de feature table https://developers.arcgis.com/javascript/latest/sample-code/widgets-featuretable-popup-interaction/
+
 3- edicao de feature table
+
 4- OAuth
+
 5- consulta dos mapas or titulo do mapa (projetos)
+
 6-display de popup
+
 7- consulta temporal (opcional) https://developers.arcgis.com/javascript/latest/sample-code/widgets-timeslider-offset/
+
 8- colocar logo da pec energia - https://developers.arcgis.com/javascript/latest/sample-code/simple-ui/
+
 9 - adicionar legenda - https://developers.arcgis.com/javascript/latest/sample-code/widgets-legend/
