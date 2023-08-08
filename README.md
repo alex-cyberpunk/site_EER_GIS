@@ -5,11 +5,12 @@ possa ser visualizado numa plataforma (site do arcgis) onde o usuario de topogra
 
 # Fluxo de comunicacao Comercial Fundiario - Topografia ( proposta 1)
 
-![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/c015b991-e31a-4bdc-b24c-73972181d459)
+![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/fb43d34d-ec92-4c4f-b10a-aec53ff1ddef)
 
 # Esboco inicial painel da topografia
 
-![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/0cdf23f8-5ade-4311-a7e9-a7bcc9cd395a)
+![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/74e1bd00-7448-4662-82da-0de29e3635ad)
+
 
 E necessario dominar : 
 1- display de sketch widget https://developers.arcgis.com/javascript/latest/sample-code/sketch-geometries/
