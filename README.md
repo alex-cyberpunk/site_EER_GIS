@@ -5,7 +5,7 @@ possa ser visualizado numa plataforma (site do arcgis) onde o usuario de topogra
 
 # Fluxo de comunicacao Comercial Fundiario - Topografia ( proposta 1)
 
-![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/78d56228-29c1-4c05-a756-e7366205d175)
+![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/51fbe4f7-d9b7-4ff7-a170-e728c465d5cf)
 
 # Esboco inicial painel da topografia
 
