@@ -1,4 +1,4 @@
-![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/2a1683cc-2964-4fca-aff5-7fc648dab5e0)
+![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/aa74662b-d849-4b2e-aa0f-df9dadfbbf38)
 
 Existe um esquema para acessar mapas privados chamado Oauth , e necessario um user pra acessar itens privados e escrever no feature layer.
 Como autenticar com Oauth atraves de um usuario [padrao](https://www.youtube.com/watch?v=t2XUubHgSp0) [codigo disponivel no github](https://github.com/odoe/jsapi-identity/blob/main/oauth.js)
