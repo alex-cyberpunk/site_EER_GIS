@@ -14,7 +14,8 @@ possa ser visualizado numa plataforma (site do arcgis) onde o usuario de topogra
 ![image](https://github.com/alex-cyberpunk/site_topografia/assets/80361639/67873489-463b-46b9-ad27-c189bd1292f6)
 
 
-E necessario dominar : 
+E necessario implementar :
+
 1- display de sketch widget https://developers.arcgis.com/javascript/latest/sample-code/sketch-geometries/
 
 2- display de feature table https://developers.arcgis.com/javascript/latest/sample-code/widgets-featuretable-popup-interaction/
