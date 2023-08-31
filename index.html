@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="logo-pec-energia-negativo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+
+    <!-- oauth- botao logout -->
+    <div id="app">
+      <button id="btnAuth">Log Out</button>
+    </div>
+
+    <!-- script de js -->
+    <script type="module" src="/index.js"></script>
+
+    <div id="viewDiv"></div>
+
+    <!-- 02 - appcontainer -->
+    <div id="appContainer">
+      <!-- Conjunto que seleciona os responsaveis -->
+      <div id="filterDiv" class="container">  
+      <label for="responsavelSelect" style="color: blue;">Selecione um Responsável:</label>
+      <select id="responsavelSelect">
+        <option value="Bruno">Bruno</option>
+        <option value="Marco">Marco</option>
+        <option value="Diogenes">Diogenes</option>
+        <!-- Outras opções de responsáveis aqui -->
+      </select>
+      <button id="filterButton">Filtrar</button>
+      </div>
+
+      <div id="tableContainer" class="container">
+        <div id="tableDiv"></div>
+      </div>
+
+      <div id="mainDiv" class="esri-widget" style="display: none;" title="Mostra/esconde tabela">
+        <label class="switch">
+          <input id="checkboxId" type="checkbox" checked="yes" />
+          <span class="slider round"></span>
+        </label>
+        <label class="labelText" id="labelText">Hide feature table</label>
+      </div>
+    </div>
+    
+    <div class="esri-widget" >
+      <button id="toggleButton" title="Mostrar/Esconder painel">
+        <calcite-icon icon="arrow-right-left" scale="m"></calcite-icon>
+
+      </button>
+      <div id="panelContent" class="panel-content">
+        <!-- Conteúdo do painel aqui -->
+        <!-- 01- itemDiv -->
+          <div id="itemDiv" class="esri-widget">
+            <label class="description"><b>Instrucoes:</b><br /></label>
+            <label class="description">Pegue o mapa e jogue na tela<br /></label>
+            <label class="description"></label>
+            <div class="cards-list"></div>
+          </div>
+          <div id="timeSlider"></div>
+
+      </div>
+    </div>
+    
+
+    
+    
+    <!-- 03- mainWindow -->
+    <div id="mainWindow">
+      <div>
+        <div style='padding-left:4px;'>
+          <p>Adicione um shp ao mapa.</p>
+          <p>Visite 
+            <a target='_blank' href="https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm">Shapefiles</a> 
+            para saber mais sobre limitacoes.</p>
+          <form enctype="multipart/form-data" method="post" id="uploadForm">
+            <div class="field">
+              <label class="file-upload">
+                <span><strong>Adicione Arquivos</strong></span>
+                <input type="file" name="file" id="inFile" />
+              </label>
+            </div>
+          </form>
+          <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
+          <div id="fileInfo"> </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </body>
+</html>
+

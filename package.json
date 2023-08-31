@@ -1,0 +1,23 @@
+{
+  "name": "arcgis-js-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@arcgis/core": "^4.27.6",
+    "abort-controller": "^3.0.0",
+    "cross-fetch": "^4.0.0",
+    "vite": "^4.4.9"
+  },
+  "type": "module"
+}
