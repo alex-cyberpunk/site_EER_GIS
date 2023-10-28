@@ -1,0 +1,79 @@
+@import "@esri/calcite-components/dist/calcite/calcite.css";
+/* Estilo para a página de login */
+.login-container {
+    background-color: #f0f0f0; /* Fundo cinza claro */
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Estilo para o cabeçalho "Login" */
+h1 {
+    color: #0079c1; /* Azul Calcite */
+}
+
+/* Estilo para as etiquetas e campos de entrada */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #777; /* Borda cinza mais escura */
+    border-radius: 5px;
+    background-color: #f0f0f0; /* Fundo cinza claro */
+}
+
+/* Estilo para o botão de envio */
+input[type="submit"] {
+    background-color: #0079c1; /* Azul Calcite */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px; /* Espaço acima do campo "Entrar" */
+    margin-bottom: 20px; /* Espaço abaixo do campo "Entrar" */
+}
+
+/* Efeito de hover no botão de envio */
+input[type="submit"]:hover {
+    background-color: #0056b3; /* Azul mais escuro no hover */
+}
+
+/* Estilo para os links "Esqueci a senha" e "Fale conosco" */
+a {
+    color: #0079c1; /* Azul Calcite */
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Efeito de hover nos links */
+a:hover {
+    text-decoration: underline; /* Sublinhado no hover */
+}
+
+.btn-custom {
+    background-color: #4C4C4C;
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px; /* Espaço entre os botões */
+}
+
+.btn-custom:hover {
+    background-color: #333333;
+}
+  

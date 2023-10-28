@@ -1,0 +1,21 @@
+[
+    {
+      "userName": "Comercial Fund - Bruno",
+      "password": "1234",
+      "userType": "Comercial Fundiario",
+      "email":"alex.matias@pecenergia.com.br"
+    },
+    {
+      "userName": "Bruno",
+      "password": "1234",
+      "userType": "Topografia",
+      "email":"alex.matias@pecenergia.com.br"
+    },
+    {
+      "userName": "Luis",
+      "password": "1234",
+      "userType": "Resources",
+      "email":"alex.matias@pecenergia.com.br"
+    }
+  ]
+  

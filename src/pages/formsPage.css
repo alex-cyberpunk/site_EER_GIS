@@ -1,0 +1,31 @@
+@import url("https://js.arcgis.com/next/esri/themes/light/main.css");
+
+/* styles.css */
+.forms-container {
+  width: 80%;
+  height: 400px;
+  margin-left: 10%;
+}
+
+
+
+/* Estilo quando o botão está pressionado */
+.my-custom-class {
+  --calcite-ui-brand: #00A6A3;
+  --calcite-ui-brand-hover: #00A6A3;
+}
+
+
+
+/* Forms.css */
+.calcite-label {
+  text-align: center; /* Centraliza o texto horizontalmente */
+  font-size: 24px; /* Tamanho do texto */
+  margin-bottom: 10px; /* Espaço entre o texto e o controle segmentado */
+}
+
+
+  calcite-loader {
+    align-self: center;
+    justify-self: center;
+  }
