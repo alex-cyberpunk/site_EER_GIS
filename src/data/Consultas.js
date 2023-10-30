@@ -4,8 +4,6 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
 import Graphic from "@arcgis/core/Graphic.js";
 import FeatureTable from "@arcgis/core/widgets/FeatureTable.js";
 import FeatureForm from "@arcgis/core/widgets/FeatureForm.js"
-import Portal from "@arcgis/core/portal/Portal.js";
-import PortalFolder from "@arcgis/core/portal/PortalFolder.js";
 
 // Load itens (Layers,Tables ,Forms )
 function loadLayer(map, itemID, layerID) {
