@@ -34,6 +34,7 @@ function App() {
   useEffect(() => {
     async function initializeUser() {
       const oauthInfo = initialize(APP_ID);
+      
       let credential =  await checkCurrentStatus(oauthInfo);
       if (!credential) {
         // signin

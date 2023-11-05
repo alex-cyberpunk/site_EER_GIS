@@ -1,6 +1,9 @@
 import { kml } from "@tmcw/togeojson";
 
 
+function readFile (){
+  
+}
 
 function convertKmlToGeoJson(kmlFile) {
     const reader = new FileReader();

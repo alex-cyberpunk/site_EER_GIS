@@ -1,8 +1,8 @@
+import FeatureTable from "@arcgis/core/widgets/FeatureTable.js";
 import PortalItem from "@arcgis/core/portal/PortalItem.js";
 import PortalQueryParams from "@arcgis/core/portal/PortalQueryParams.js";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
 import Graphic from "@arcgis/core/Graphic.js";
-import FeatureTable from "@arcgis/core/widgets/FeatureTable.js";
 import FeatureForm from "@arcgis/core/widgets/FeatureForm.js"
 
 // Load itens (Layers,Tables ,Forms )

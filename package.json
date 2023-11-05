@@ -11,6 +11,8 @@
     "@tmcw/togeojson": "^5.8.1",
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dojo": "^1.17.3",
     "jest": "^27.5.1",
     "ncp": "^2.0.0",
@@ -25,7 +27,7 @@
   "scripts": {
     "start": "ncp ./node_modules/@arcgis/core/assets ./public/assets && react-scripts start",
     "build": "ncp ./node_modules/@arcgis/core/assets ./public/assets && react-scripts build",
-    "test": "ncp ./node_modules/@arcgis/core/assets ./public/assets && react-scripts test",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "eject": "react-scripts eject",
     "copy": "ncp ./node_modules/@arcgis/core/assets ./public/assets",
     "postinstall": "npm run copy"
@@ -55,5 +57,11 @@
     "url": "site_EER_GIS"
   },
   "author": "Alex",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.0",
+    "@babel/preset-env": "^7.23.2",
+    "babel-jest": "^29.7.0"
+  }
 }

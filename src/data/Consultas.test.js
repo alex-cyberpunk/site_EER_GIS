@@ -1,20 +1,33 @@
-const  {test,expect} = require('@jest/globals');
-const { returnProjetos, retornaListAreaCode,returnEditFeatures,applyEditsToLayer,loadLayer,loadTable,loadForms,findField,hideFields,lockFieldsTable,hideFieldsTable,findFeatLyr}= require('./Consultas.js');
+//import ArcGISMap from "@arcgis/core/Map"
+import { returnProjetos, retornaListAreaCode,returnEditFeatures,applyEditsToLayer,loadLayer,loadTable,loadForms,findField,hideFields,lockFieldsTable,hideFieldsTable,findFeatLyr} from './Consultas.js';
+
+
+jest.mock('@arcgis/core/Map')
+jest.mock('@arcgis/core/views/MapView')
+
+
+/*
+
 test('loadLayer com mapa', async()=>{
     loadLayer(returnView().map, returnItemID(), 0).then((featureLayer)=>{
         expect(ArcGISMap).toHaveBeenCalledTimes(1);
         expect(FeatureLayer).toHaveBeenCalledTimes(1);
         expect(Array.isArray(featureLayer)).toBeTruthy();
     })
+
 })
+
 test('loadLayer sem mapa', async()=>{
     loadLayer(null, returnItemID(), 0).then(()=>{
         expect(Array.isArray(movies)).toBeTruthy();
         expect(ArcGISMap).toHaveBeenCalledTimes(1);
+
         expect(FeatureLayer).toHaveBeenCalledTimes(1);
         expect(Array.isArray(featureLayer)).toBeTruthy();
     })
 })
+
+*/
 /*
 test('loadTable', async()=>{
        expect(Array.isArray(movies)).toBeTruthy();

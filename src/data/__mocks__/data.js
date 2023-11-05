@@ -47,16 +47,25 @@ const adds=[{  "geometry":
     }
 }]
 
-async function returnItemID(){
-    return itemID;
-}
-async function returnMap(){
-    return map;
+// Crie um mock para o FileReader
+class MockFileReader {
+  constructor() {
+    this.result = null;
+    this.error = null;
+  }
+
+  readAsText(kmlFile) {
+    if (this.error) {
+      this.onerror(this.error);
+    } else {
+      this.result = kmlFile; // Simula a leitura do arquivo KML
+      this.onload({ target: { result: this.result } });
+    }
+  }
+
+  onload(event) {}
+  onerror(error) {}
 }
 
-async function returnView(){
-    return view;
-}
-
-
-module.exports ={returnView,returnItemID}
+// Substitua o construtor global FileReader pelo mock
+global.FileReader = MockFileReader;

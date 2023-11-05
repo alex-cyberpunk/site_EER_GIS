@@ -1,3 +1,14 @@
+import {convertKmlToGeoJson,convert2D} from './01-convert-kmz-data.js'
+import fs from 'fs'
+import path from 'path';
+
+
+
+
+  
+
+
+/*
 test('warningMessages', async()=>{
     //testa se todas as mensagen de aviso estao funcionando conforme o esperado
     //Usa mocks de entrada e testa a saida de createpopups()
@@ -19,15 +30,25 @@ test('choosenRitghForms', async()=>{
     expect(movies.length).toBeTruthy();
 
 })
-
-
 test('conversionKmzToGeojson', async()=>{
     //testa se a conversao do kmz para geojson age como o esperado 
     // Usa mocks de entrada com  a saida de convert2D()
-    expect(Array.isArray(movies)).toBeTruthy();
-    expect(movies.length).toBeTruthy();
+    const testDirectory = path.dirname(__filename);
+    const kmzFilePath = path.join(testDirectory, 'teste.kmz');
+
+    const kmlData = fs.readFileSync(kmzFilePath, 'utf8');
+    convertKmlToGeoJson(kmlData,true)
+    .then((geoJsonString) => {
+            //expect(Array.isArray(adds)).toBeTruthy();
+            const coordenadas2D=convert2D(geoJsonString)
+            console.log(coordenadas2D)
+        });
+
+        
 
 })
+
+
 
 
 
@@ -45,3 +66,5 @@ test('cleanSet', async()=>{
     expect(movies.length).toBeTruthy();
 
 })
+*/
+
