@@ -256,8 +256,8 @@ function  handleSubmit(selectedFile,form,tipo_forms,portal,appManager){
                 root.render(<SucessMessage Title={"Area salva no mapa"} />);
                 setTimeout(() => {
                   root.unmount(); }, 10000);
-                
-                  axios.post('http://localhost:3001/enviarEmail', { email:'alex.matias@pecenergia.com.br', subject:'Nova area no fluxo de aprovacao' ,responsavel:appManager.Forms.user})
+                  console.log(appManager.Forms)
+                  axios.post('http://localhost:3001/enviarEmail', {values:{},userId:appManager.Forms.userId,key:"areaNovaTopografia"})
                   .then(teste => {
                     console.log(teste)
                   })  

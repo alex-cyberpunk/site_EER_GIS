@@ -128,7 +128,7 @@ function printIntersection(layer,portal){
                   if(!area_code){
                     retornaNovaAreaCode(props,nomeProjeto).then((newAreaCode)=>{
                       displayMessage(` Propriedade ${newAreaCode} adicionada em ${nomeProjeto}`,'Alert','Sucess');
-                      axios.post('http://localhost:3001/enviarEmail', { email:'alex.matias@pecenergia.com.br', subject:'Nova area aprovada' ,responsavel:'Bruno'})
+                      axios.post('http://localhost:3001/enviarEmail', {values:{area_code:newAreaCode,Projeto:nomeProjeto},userId:2,key:"areaAprovadaTopografia"})
                           .then(teste => {
                             console.log(teste)
                           }) 

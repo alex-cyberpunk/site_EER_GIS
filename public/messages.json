@@ -1,26 +1,29 @@
-[{
-    "redefinirSenha": {
+[
+    {   "messageType":"redefinirSenha",
         "subject": "Redefinição de Senha",
         "body": "Seu token de redefinição de senha é:"
     },
-    "areaNovaTopografia": {
-        "subject": "Propriedade nova no fluxo de aprovacao - numero de Pedido: {numPedido}",
-        "body": "Uma propriedade nova foi adicionada no fluxo de aprovacao de areas por {responsavelComercial} e espera aprovacao de {responsavelTopografia} ."
+    { 
+    "messageType":"areaNovaTopografia",
+    "subject": "Propriedade nova no fluxo de aprovacao - numero de Pedido: {numPedido}",
+    "body": "Uma propriedade nova foi adicionada no fluxo de aprovacao de areas por {responsavelComercial} e espera aprovacao de {responsavelTopografia} ."
     },
-    "areaNovaResources": {
-        "subject": "Propriedade nova no fluxo de aprovacao - numero de Pedido: {numPedido}",
-        "body": "Uma propriedade nova foi adicionada no fluxo de aprovacao de areas e precisa de aprovacao"
+    {
+    "messageType":"areaNovaResources",
+    "subject": "Propriedade nova no fluxo de aprovacao - numero de Pedido: {numPedido}",
+    "body": "Uma propriedade nova foi adicionada no fluxo de aprovacao de areas por {responsavelComercial} e precisa de aprovacao da area Resources"
     },
-    "areaAprovadaTopografia": {
+    {   
+        "messageType":"areaAprovadaTopografia",
         "subject": "Propriedade aprovada no fluxo de aprovacao - numero de Pedido: {numPedido}",
-        "body": "Uma propriedade nova foi adicionada com código de área {area_code} no base {Projeto} por {responsavelTopografia}"
+        "body": "Uma propriedade nova foi adicionada com código de área {area_code} na base {Projeto} por {responsavelTopografia}"
       },
-    "areaReprovadaResources": {
+       {"messageType":"areaReprovadaResources",
         "subject": "Uma propriedade foi Reprovada no seu fluxo de aprovacao - numero de Pedido: {numPedido}",
-        "body": "Uma propriedade nova foi reprovada no fluxo de aprovacao de areas, por favor entre em contato com {responsavelResources}"
+        "body": "Uma propriedade nova foi reprovada no fluxo de aprovacao de areas, por favor entre em contato com a area de Resources"
     },
-    "areaReprovadaTopografia": {
+    {   "messageType":"areaReprovadaTopografia",
         "subject": "Uma propriedade foi Reprovada no seu fluxo de aprovacao - numero de Pedido: {numPedido}",
         "body": "Uma propriedade nova foi reprovada no fluxo de aprovacao de areas, por favor entre em contato com {responsavelTopografia}"
     }
-}]
+]

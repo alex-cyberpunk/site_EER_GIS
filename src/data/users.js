@@ -14,6 +14,7 @@ function handleUserType(user) {
             console.log(userType)
             //Mapa de exibicao          
             mapaPedidos={
+              userId:user._id,
               user:user.userName,
               id_mapa_painel_aprovacao:"967a2d2c37c74e26b5b8eb93375cad76",
               lockFields:['Projeto','Responsavel_Topografia','Responsavel_Comercial','TipodeOperacaonabase'],
@@ -25,6 +26,7 @@ function handleUserType(user) {
               tipoResponsavel:['Responsavel_Topografia']
             }
             forms={
+              userId:user._id,
               user:user.userName,
               id_mapa_painel_aprovacao:"967a2d2c37c74e26b5b8eb93375cad76",
               TiposOperacao:['Edicao','Inclusao'],
@@ -44,6 +46,7 @@ function handleUserType(user) {
             
             //Mapa de exibicao
             mapaPedidos={
+              userId:user._id,
               user:user.userName,
               id_mapa_painel_aprovacao:"967a2d2c37c74e26b5b8eb93375cad76",
               lockFields:['Projeto','Responsavel_Topografia','Responsavel_Comercial','TipodeOperacaonabase','Aprovacao'],
@@ -55,6 +58,7 @@ function handleUserType(user) {
               tipoResponsavel:['Responsavel_Comercial']
             }
             forms={
+              userId:user._id,
               user:user.userName,
               id_mapa_painel_aprovacao:"967a2d2c37c74e26b5b8eb93375cad76",
               TiposOperacao:['Edicao','Inutilizacao'],
