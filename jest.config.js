@@ -12,6 +12,7 @@ module.exports = {
   notify: false,
   notifyMode: "failure-change",
   setupFiles: ['<rootDir>/node_modules/dotenv-safe/config'],
+  //testTimeout: 60000,
 };
 
 

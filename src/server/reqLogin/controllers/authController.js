@@ -3,6 +3,7 @@
 const jwt = require('jsonwebtoken'); 
 const repository=require('../repository/repository.js')
 
+
 async function doLogin(req,res,next){
     const username = req.body.username;
     const password = req.body.password;
@@ -10,7 +11,7 @@ async function doLogin(req,res,next){
     try{
         const user = await repository.getUser(username,password);
         console.log(user)
-        const token = jwt.sign({userId:user._id , userType: user.userType},
+        const token = jwt.sign({userId:user.userName , userType: user.userType},
             process.env.SECRET,
             {expiresIn:parseInt(process.env.EXPIRES)});
         
@@ -51,8 +52,8 @@ async function validateToken(req,res,next){
     let token= req.headers['authorization'];
     token = token.replace('Beader','');
     try{
-        const {userId,userType}=jwt.verify(token,process.env.SECRET)
-        res.locals.userId=userId;
+        const {userName,userType}=jwt.verify(token,process.env.SECRET)
+        res.locals.userName=userName;
         res.locals.userType=userType;
         next();
     }
@@ -70,4 +71,10 @@ async function doLogout(req,res,next){
     res.sendStatus(200);
 }
 
-module.exports={doLogin,doLogout,validateToken,validateLoginSchema,validateBlacklist};
+async function getInfoApp(req,res,next){
+    const token = req.body.token;
+    const {userId,userType}=jwt.verify(token,process.env.SECRET)
+    res.json({userId,userType}) 
+} 
+
+module.exports={doLogin,doLogout,validateToken,validateLoginSchema,validateBlacklist,getInfoApp};

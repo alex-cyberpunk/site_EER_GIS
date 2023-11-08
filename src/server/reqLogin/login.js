@@ -24,7 +24,7 @@ module.exports=(app)=>{
 
     app.post('/logout',authController.validateToken,authController.doLogout);
 
-    app.get('/userInfo',repository.getUserInfo);
+    app.get('/userInfo',authController.getInfoApp);
 
     return login
 }

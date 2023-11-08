@@ -4,8 +4,9 @@ const bcrypt = require('bcryptjs')
 
 async function getUser(username,password){
     const db = await database.connect();
-    const user = await db.collection('users').findOne({username});
+    const user = await db.collection('users').findOne({userName:username});
     if(!user) throw new Error('User not found!');
+    console.log(user);
     const isValid=bcrypt.compareSync(password,user.password);
     if(!isValid) throw new Error('Wrong user and/or password!')
     return user;

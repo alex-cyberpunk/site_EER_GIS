@@ -28,7 +28,7 @@ function App() {
    *then(userInfo => {setUserApp(userInfo)}) 
    * 
   */
-  
+   axios.get('http://localhost:3002/userInfo').then(userInfo => {setUserApp(userInfo)})//Checa infos no react
 
   useEffect(() => {
     async function initializeUser() {

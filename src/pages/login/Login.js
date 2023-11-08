@@ -27,7 +27,8 @@ const Login = ({setUserApp}) => {
     console.log('Nome de Usuário:', username);
     console.log('Senha:', password);
 
-    axios.post('http://localhost:3002/login', { username:username, password:password }).then(user => {
+    axios.post('http://localhost:3002/login', { username:username, password:password }).
+      then(token => {
       console.log("logado no express");
       console.log(token);  
       if(token){
