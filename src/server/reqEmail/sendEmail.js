@@ -1,25 +1,25 @@
 const nodemailer = require('nodemailer');
-const axios = require('axios');
-const path = require('path');
 const fs = require('fs');
-const usersPath =  '../../public/users.json';
-const messagesPath =  '../../public/messages.json';
+const path = require('path');
+
+const usersPath = path.join(__dirname, '..', 'users.json');
+const messagesPath = path.join(__dirname, '.', 'messages.json');
+
+//const messagesPath =  './messages.json';
 
 async function sendEmail(email, body,subject) {
-    const emailAdmin='alex.matias@pecenergia.com.br'
-    const passEmailCoporative='406571Pec'
     const transporter = nodemailer.createTransport({
-        host: 'smtp.office365.com',
-        port: 587,
+        host: process.env.SMPT,
+        port: process.env.SMPT_PORT,
         secure: false, // true para SSL, false para TLS
         auth: {
-            user: emailAdmin,
-            pass: passEmailCoporative 
+            user: process.env.SMTP_EMAIL,
+            pass: process.env.SMTP_SENHA
         }
     });
     // Configuração do email
     const mailOptions = {
-        from: emailAdmin,
+        from: process.env.SMTP_EMAIL,
         to: email,
         subject: subject,
         text: body
@@ -27,6 +27,7 @@ async function sendEmail(email, body,subject) {
 
     // Envia o email
     await transporter.sendMail(mailOptions);
+    transporter.close();
 }
 
 async function sendMessageWithTemplate(key, values,userId) {
@@ -87,4 +88,14 @@ async function sendMessageWithTemplate(key, values,userId) {
 
 }
 
-module.exports={sendMessageWithTemplate}
+module.exports=(app)=>{
+    app.post('/enviarEmail', async (req, res) => {
+
+    userId=req.body.userId
+    const messageValues = req.body.values
+    const messageKey = req.body.key;
+
+    await sendMessageWithTemplate(messageKey, messageValues,userId)
+    return res.json({status:200});
+    })
+}

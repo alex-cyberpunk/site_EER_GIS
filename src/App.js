@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from "react";
 import  esriConfig  from "@arcgis/core/config.js";
-import { initialize, checkCurrentStatus, signIn, signOut, fetchUser ,fetchPortal} from './data/oauth.js';
-import Portal from "@arcgis/core/portal/Portal.js";
-import PageForms from "./pages/formsPage.js";
-import MapaPedidos from "./pages/MapsPages.js"
-import Sheet from "./components/Sheet.js";
-import Header from "./components/Header.js";
-import Login from "./components/Login.js";
-import{lockFieldsTable,loadLayer,loadTable,returnProjetos} from "./data/Consultas.js"
+import { initialize, checkCurrentStatus, signIn, signOut, fetchUser ,fetchPortal} from './featuresArcgisJS/oauth.js';
+import PageForms from "./pages/painelPedidos/formsPage.js";
+import MapaPedidos from "./pages/mapaPedidos/MapsPages.js"
+import Sheet from "./pages/sharedComponents/Sheet.js";
+import Header from "./pages/sharedComponents/Header.js";
+import Login from "./pages/login/Login.js";
 import { Route, Routes, BrowserRouter ,Link ,Switch} from 'react-router-dom';
 
-
 import { setAssetPath } from "@esri/calcite-components/dist/components";
-import Footer from "./components/Footer.js";
+import Footer from "./pages/sharedComponents/Footer.js";
 setAssetPath("https://cdn.jsdelivr.net/npm/@esri/calcite-components/dist/calcite/assets");
 
-
-
-const APP_ID = "kHuc6FJazayMCHNW";
-const portal = new Portal({url:"https://eerpec.maps.arcgis.com"});
+//const portal = new Portal({url:"https://eerpec.maps.arcgis.com"});
 
 function App() {
-  // esriConfig.apiKey = "AAPK29b7e2a6d72e4940a8b4cc3d37fe8a5eYtRUY7j4kPPdDyWJIlMCeDfEVObtacAycPJozmfdUnk2eY42xwbWyIH-dA_GA-oC";
-  esriConfig.assetsPath = './assets';
 
+  esriConfig.assetsPath = './assets';
   const [user, setUser] = useState(null);
   const [portal,setPortal] = useState(null);
-  const[userPromise,setUserPromise]=useState(null);
-
   const[userApp,setUserApp]=useState(null);
   
+
+  /**
+   * Possivel chamada de API para obter informacoes do usuario
+   *axios.get('http://localhost:3002/userInfo').
+   *then(userInfo => {setUserApp(userInfo)}) 
+   * 
+  */
   
+
   useEffect(() => {
     async function initializeUser() {
-      const oauthInfo = initialize(APP_ID);
+      const oauthInfo = initialize('kHuc6FJazayMCHNW');
       
       let credential =  await checkCurrentStatus(oauthInfo);
       if (!credential) {
@@ -54,16 +53,6 @@ function App() {
     }
 
     if(!user){initializeUser();}
-    
-    /*
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      console.log("valor armazenado")
-      console.log(storedUser);
-      setUserApp(JSON.parse(storedUser));     
-    }
-    */
-    
     
   }, []);
 

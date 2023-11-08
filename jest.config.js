@@ -11,6 +11,7 @@ module.exports = {
   modulePathIgnorePatterns: [],
   notify: false,
   notifyMode: "failure-change",
+  setupFiles: ['<rootDir>/node_modules/dotenv-safe/config'],
 };
 
 

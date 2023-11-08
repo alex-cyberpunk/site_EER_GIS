@@ -1,60 +1,41 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
-const axios=require('axios')
-const app = express();
-
-const {authenticateUser} = require('./reqLogin/repository.js')
-const {sendMessageWithTemplate} = require('./reqEmail/sendEmail.js')
-
-const port = 3001;
-
-app.use(require("cors")());
-app.use(express.json());
-
-//app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(express.static(path.join(__dirname, 'public')));
+let server = null;
 
 
-app.post('/login', async (req, res) => {
-    console.log(req.body)
-    const { username, password } = req.body;
-    console.log(username, password)
-    try {
-        const user = await authenticateUser(username, password);
+async function start() {
+    const app = express();
+    
+    
+    app.use(require("cors")());
+    app.use(express.json());
+    
+    //Pra saber se ta diboas
+    app.get('/health', (req, res, next) => {
+        res.send(`The service arcgis already started at ${process.env.PORT}`);
+      });
 
-        if (user) {
-            console.log('Login bem-sucedido!');
-            console.log(user)
-            // Redirecionar para a página "segredo.html" após o login bem-sucedido
-            return res.json(user);
-        } else {
-            console.error('Erro de autenticação.');
-            return res.status(401).send('Nome de usuário ou senha incorretos.');
-        }
-    } catch (error) {
-        console.error(`Username Enviado: ${username}`);
-        console.error(`Password Enviada: ${password}`);
-        return res.status(500).send('Erro interno do servidor');
-    }
-});
+    //api(app);
+    
+    //requisicoes de login  
 
 
-app.post('/enviarEmail', async (req, res) => {
+    app.use((error, req, res, next) => {
+        logger.error(error.stack);
+        res.sendStatus(500);
+    });  
 
-    userId=req.body.userId
-    console.log("userId")
-    console.log(userId)
-    const messageValues = req.body.values
-    const messageKey = req.body.key;
-
-    await sendMessageWithTemplate(messageKey, messageValues,userId)
-    return res.json({status:200});
+    server =app.listen(3002, () => {
+        console.log(`Servidor rodando na porta ${process.env.PORT}`);
     });
 
+    return app
+}
 
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+async function stop() {
+    if (server) await server.close();
+    return true;
+  }
 
+module.exports = { start, stop };
 
 
