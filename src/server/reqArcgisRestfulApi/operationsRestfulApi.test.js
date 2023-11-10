@@ -1,12 +1,12 @@
 const {test,expect} = require('@jest/globals');
-const request = require('../../../node_modules/supertest');
-const server = require('../server.js')
+const express = require('express');
+const request = require('supertest');
 
 const postInFeatureLayer = require('./operationsRestfulApi.js')
 
 /// Mocks
-const urlMapa =  'https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/Pedidos_TESTE/FeatureServer/0/applyEdits?token=';
-const adds={
+const urlMapa =  'https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/Pedidos_TESTE/FeatureServer/0';
+const data={adds:[{
     geometry: {
       rings:[[[-38.4434538956639,-9.07133705545406],
               [-38.4504496894324,-9.09338394522013],
@@ -16,7 +16,7 @@ const adds={
               [-38.4372886940886,-9.05703825041346],
               [-38.4371137247292,-9.05710154519007],
               [-38.4434538956639,-9.07133705545406]]],    
-      spatialReference: { "wkid": 4326 }
+      spatialReference: { "wkid": '4326' }
               },
     attributes: {
       Proprietario_principal: 'Teste',
@@ -25,7 +25,12 @@ const adds={
       Status: 'MSD',
       Responsavel_Topografia: 'Bruno',
       Responsavel_Comercial: 'Comercial Fund - Bruno'
-    }
+              }
+    }],
+    returnEditResults:true,
+    returnEditMoment:true
+
+
   }
 
   let UserCreator={
@@ -34,49 +39,69 @@ const adds={
     password: process.env.SENHA_CREATOR,
     client: 'referer',
     referer: 'arcgis.com',
-    expiration: 1
+    expiration: '1'
     }
   }
   let app=null;
+  let server=null;
+  let token='';
+
   beforeAll(async()=>{
-    process.env.PORT=3004;
-    app = await server.start();
+    app = express();
+    app.use(express.json());
     postInFeatureLayer(app);
+    server =app.listen(4001, () => {
+      console.log(`Servidor rodando na porta ${4001}`);
     });
+    const response= await request(server).
+                          post('/generateToken').
+                          send(UserCreator);
+    token=response.body.token;
+    console.log(token)
+    /*
+       
+    */
+                
+});
 
   afterAll(async()=>{
-        await server.stop();
-    })
-
-  console.log("CARARCACSVGH")  
-  test('POST /generate Token 200 OK' ,async()=>{
-      const response = await request(app).post('/generateToken').send(UserCreator);
-      expect(response.status).toEqual(200);
-      console.log("sim essa e a resposta")
-      console.log(response.text)
-   })    
-
-
-test('POST /generate Token 400 Unauthorize' ,async()=>{
-    UserCreator.User.password=''
-    const response = await request(app).post('/generateToken').send(UserCreator);
-    expect(response.status).toEqual(400);
- })
-
-
- /*
- 
- test('POST /insertInMap 200 OK ' ,async()=>{
-    const response = await request(app).post('/insertInMap');
+    await server.close();
+  })
+  
+  test('POST /insertInMap 200 OK ' ,async()=>{
+    const response = await request(app).
+                          post('/insertInMap')
+                          .send({data:data,urlFeatlyr:urlMapa,token:token});
     expect(response.status).toEqual(200);
     expect(response.body.length).toBeTruthy();
- }) 
- test('POST /insertInMap 400 ' ,async()=>{
-    const response = await request(app).post('/insertInMap');
-    expect(response.status).toEqual(400);
-    expect(response.body.length).toBeTruthy();
- }) 
- */
+  }) 
+  
+  test('POST /insertInMap 404 ' ,async()=>{
+    token=null
+    const response = await request(app).
+                          post('/insertInMap')
+                          .send({data:data,urlFeatlyr:urlMapa,token:token});
+  ;
+    expect(response.status).toEqual(404);
+  })   
+
+/* Existe um limite para numero de logins seguidos cuidado
+test('POST /generate Token 200 OK' ,async()=>{
+      const response = await request(server).post('/generateToken').send(UserCreator);
+      expect(response.status).toEqual(200);
+      expect(response.body.token).toBeTruthy();
+   })    
+
+test('POST /generate Token 400 Unable to generate Token' ,async()=>{
+    UserCreator.User.password='1'
+    const response = await request(server).post('/generateToken').send(UserCreator);
+    expect(response.body.error.code).toEqual(400);
+ })
+
+*/
+
+
+
 
 
  

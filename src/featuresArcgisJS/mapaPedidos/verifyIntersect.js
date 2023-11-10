@@ -2,31 +2,57 @@ import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
 import  {retornaListAreaCode} from '../Consultas.js'
 import { callAlert } from "../../pages/sharedComponents/SucessMessage.js"
 import axios from 'axios';
-
+import { saveAs } from 'file-saver'
 //import {sendMessageWithTemplate} from "../email/sendEmail.js"
-function findIntersect(geometry, featureData,chave) {
+function findIntersect(feat, featureData,chave) {
   try {
     const intersectingFeatures = [];
     
     const data =  featureData;
     
+    //Nos casos que nao procura interseccoes a prop pode nao ter area_code
+    let Geom;
+    let area_code_intersect,CreationDate_intersect,EditDate_intersect;
+
+    if(chave==='intersections'){
+      Geom=feat.geometry
+      area_code_intersect=feat.area_code
+      CreationDate_intersect=feat.CreationDate
+      EditDate_intersect=feat.EditDate
+    }
+    else{ Geom=feat} //apenas geometria na requisicao
+
     if (data) {
-      console.log(data)
+      //console.log(data)
       data.forEach((feature) => {
-          if (geometryEngine.intersect(feature.geometry, geometry)) {
-            console.log("o feature e :")
-            console.log(geometry)
+        //debugger
+          if (geometryEngine.intersect(feature.geometry, Geom)) {
             switch(chave){
               case 'linha_code':
                 intersectingFeatures.push({
                   linha_code: feature.linha_code,
                 });
-                console.log(intersectingFeatures)
+                //console.log(intersectingFeatures)
               break;  
               case 'area_code':
                 intersectingFeatures.push({
                   area_code: feature.area_code,
                 });
+              case 'intersections':
+                if(feature.area_code!==area_code_intersect){
+                  let intersection=geometryEngine.intersect(feature.geometry, Geom)
+                  let area = geometryEngine.planarArea(intersection, "hectares");
+                  if(area>2)
+                    intersectingFeatures.push({
+                      area_code_intersect:area_code_intersect,
+                      CreationDate_intersect:CreationDate_intersect,
+                      EditDate_intersect:EditDate_intersect,
+                      area_code: feature.area_code,
+                      CreationDate:feature.CreationDate,
+                      EditDate:feature.EditDate
+                    });  
+                  }
+                  //debugger  
                 break;    
               
             }            
@@ -171,6 +197,115 @@ function printIntersection(layer,portal){
     });
     
 }
+
+function verificaIntersections(portal) {
+
+  function convertToDate(timestamp){
+    const data = new Date(timestamp);
+
+    const dia = data.getDate().toString().padStart(2, '0');
+    const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+    const ano = data.getFullYear();
+    const hora = data.getHours().toString().padStart(2, '0');
+    const minuto = data.getMinutes().toString().padStart(2, '0');
+    const segundo = data.getSeconds().toString().padStart(2, '0');
+
+    const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}:${segundo}`;
+    return dataFormatada;
+  }  
+
+  async function findIntersections(projetos) {
+    let intersectingFeatures = [];
+
+    for (let nomeProjeto of projetos) {
+      console.log(nomeProjeto);
+      const props = await retornaListAreaCode(portal, true, nomeProjeto, 3,true);
+
+      props.forEach((prop) => {
+        const results = findIntersect(prop, props, 'intersections');
+        if (results.length > 0) {
+          results.forEach((itemIntersect, index) => {
+            intersectingFeatures.push({
+              area_code_intersect:itemIntersect.area_code_intersect,
+              CreationDate_intersect:convertToDate(itemIntersect.CreationDate_intersect),
+              EditDate_intersect:convertToDate(itemIntersect.EditDate_intersect),
+              area_code: itemIntersect.area_code,
+              CreationDate:convertToDate(itemIntersect.CreationDate),
+              EditDate:convertToDate(itemIntersect.EditDate),
+              Projeto:nomeProjeto
+            });
+          });
+        } 
+      });
+    }
+
+    // Elimina duplicatas
+    const combinacoesUnicas = new Set();
+
+    const itensNaoDuplicados = [];
+
+    for (const item of intersectingFeatures) {
+      const areaCode = item.area_code;
+      const areaCodeIntersect = item.area_code_intersect;
+      const combinacao1 = `${areaCode}-${areaCodeIntersect}`;
+      const combinacao2 = `${areaCodeIntersect}-${areaCode}`;
+
+      // Verifique se ambas as combinações já foram vistas
+      if (!combinacoesUnicas[combinacao1] && !combinacoesUnicas[combinacao2]) {
+        // Se ambas as combinações não foram vistas, adicione-as ao objeto de combinações únicas e ao array de itens não duplicados
+        combinacoesUnicas[combinacao1] = true;
+        combinacoesUnicas[combinacao2] = true;
+        itensNaoDuplicados.push(item);
+      }
+    }
+
+    return itensNaoDuplicados;
+  }
+
+  // Certifique-se de que você tenha uma matriz de projetos para passar para findIntersections
+  const projetos= ['SSB',
+  'CUN',
+  'ESV',
+  'ALG',
+  'PAC',
+  'SAL',
+  'SAS',
+  'SCA',
+  'SCR',
+  'SDJ',
+  'SEC',
+  'SGA',
+  'SGE',
+  'SGO',
+  'SGW',
+  'SIB',
+  'SMA',
+  'SPA',
+  'SSE',
+  'SSV',
+  'STE',
+  'TDV',
+  'SGR',
+  'ARN',
+  'STA',
+  'SCB',
+  'OUR',
+  'SVD',
+  'BJL',
+  'SDB',
+  'SAG',
+  'BXA',
+  'BQR']
+  findIntersections(projetos)
+    .then((intersectingFeatures) => {
+      const blob = new Blob([JSON.stringify(intersectingFeatures)], {
+        type: 'application/json'
+      });
+
+      saveAs(blob, 'interseccoes.json');
+    });
+}
+
  
 
-export {printIntersection,findIntersect};
+export {printIntersection,findIntersect,verificaIntersections};

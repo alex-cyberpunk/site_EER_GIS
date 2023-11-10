@@ -10,11 +10,9 @@ async function doLogin(req,res,next){
 
     try{
         const user = await repository.getUser(username,password);
-        console.log(user)
         const token = jwt.sign({userId:user.userName , userType: user.userType},
             process.env.SECRET,
             {expiresIn:parseInt(process.env.EXPIRES)});
-        
         res.json({token})    
     }
 

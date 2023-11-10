@@ -69,7 +69,7 @@ function loadForms(featureLayer, formDiv) {
 }
 
 // Operacoes dos feature layers dos Projetos
-function retornaListAreaCode(portal, geometria, nomeDoMapa, IdLayer) {
+function retornaListAreaCode(portal, geometria, nomeDoMapa, IdLayer ,returOthersattribrutes = false) {
   return returnProjetos(portal,null).then(function (layerItems) {
     // Encontre o ID do item correspondente ao nome do mapa
     const itemId = layerItems[nomeDoMapa];
@@ -98,10 +98,23 @@ function retornaListAreaCode(portal, geometria, nomeDoMapa, IdLayer) {
         const areaCodeList = result.features.map(function (feature) {
           if (geometria) {
             if (IdLayer === 3) {
-              return {
-                area_code: feature.attributes.area_code,
-                geometry: feature.geometry.toJSON() // Converte a geometria em JSON
-              };
+              if(returOthersattribrutes){
+                //debugger
+                return{
+                  CreationDate:feature.attributes.CreationDate,
+                  EditDate:feature.attributes.EditDate,
+                  area_code: feature.attributes.area_code,
+                  geometry: feature.geometry.toJSON()
+                  
+                }
+                
+              }
+              else{
+                return {
+                  area_code: feature.attributes.area_code,
+                  geometry: feature.geometry.toJSON()
+                }
+              }
             }
             if (IdLayer === 1 || IdLayer === 2) {
               return {
@@ -334,10 +347,42 @@ function returnEditFeatures_old(update,coordenadas2D) {
     return addEdits
 
   }
-
-  function applyEditsToLayerHttp(){
+/*
+function applyEditsToLayerHttp(token,data){
     //Solicatao http do user creator
+    const portalUrl = "https://www.arcgis.com"
+    const params = {
+      'name': name,
+      'targetSR': view.spatialReference,
+      'maxRecordCount': 1000,
+      'enforceInputFileSizeLimit': true,
+      'enforceOutputJsonSizeLimit': true
+    };
+
+    const myContent = {
+      'adds': JSON.stringify(data),
+      'publishParameters': JSON.stringify(params),
+      'f': 'json',
+    };
+
+    // use the REST generate operation to generate a feature collection from the zipped shapefile
+    request(portalUrl + '/sharing/rest/content/features/generate', {
+      query: myContent,
+      body: document.getElementById('uploadForm'),
+      responseType: 'json'
+    })
+    .then((response) => {
+        const layerName = response.data.featureCollection.layers[0].layerDefinition.name;
+        document.getElementById('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
+        addShapefileToMap(response.data.featureCollection);
+      
+      })
+      .catch(errorHandler);
+  
   }
+
+*/
+  
 
 // Edits Feature layers
   function applyEditsToLayer(edits,item_id) {

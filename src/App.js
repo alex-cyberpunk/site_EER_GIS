@@ -7,10 +7,18 @@ import Sheet from "./pages/sharedComponents/Sheet.js";
 import Header from "./pages/sharedComponents/Header.js";
 import Login from "./pages/login/Login.js";
 import { Route, Routes, BrowserRouter ,Link ,Switch} from 'react-router-dom';
+import {verificaIntersections} from './featuresArcgisJS/mapaPedidos/verifyIntersect.js' 
 
+import axios from 'axios';
 import { setAssetPath } from "@esri/calcite-components/dist/components";
 import Footer from "./pages/sharedComponents/Footer.js";
+
+
+//Import temporarios pra testes
+import {generateFeatureCollection} from "./featuresArcgisJS/mapaPedidos/widgetUploadEdits.js"
+
 setAssetPath("https://cdn.jsdelivr.net/npm/@esri/calcite-components/dist/calcite/assets");
+
 
 //const portal = new Portal({url:"https://eerpec.maps.arcgis.com"});
 
@@ -28,7 +36,7 @@ function App() {
    *then(userInfo => {setUserApp(userInfo)}) 
    * 
   */
-   axios.get('http://localhost:3002/userInfo').then(userInfo => {setUserApp(userInfo)})//Checa infos no react
+   //axios.get('http://localhost:3002/userInfo').then(userInfo => {setUserApp(userInfo)})//Checa infos no react
 
   useEffect(() => {
     async function initializeUser() {
@@ -44,11 +52,12 @@ function App() {
       if (credential) {
         const user = await fetchUser();
         const portal = await fetchPortal();
-        console.log(user);
+        //console.log(user);
         setUser(user);
         setPortal(portal);
+        //verificaIntersections(portal)
         
-        
+        //generateFeatureCollection('/src/featuresArcgisJS/mapaPedidos/shps/BRE - Copia.zip')
       }
     }
 
@@ -64,16 +73,37 @@ function App() {
       <Route
           path="/mapa"
           element={
-            user && userApp ? (
-              <>
+            user  ? (
+              
+                <>
                 <Header userApp={userApp} />
                 <MapaPedidos Portal={portal} userApp={userApp} />
               </>
+              
+              
             ) : (
               // Renderize algo caso as condições não sejam atendidas, se necessário
               null
             )
           }
+          /*
+          
+          element={
+            user && userApp ? (
+              user.userType==='Topografia'(
+                <>
+                <Header userApp={userApp} />
+                <MapaPedidos Portal={portal} userApp={userApp} />
+              </>
+              )
+              
+            ) : (
+              // Renderize algo caso as condições não sejam atendidas, se necessário
+              null
+            )
+          }
+          */
+          
         />
         <Route
             path="/pageForms"

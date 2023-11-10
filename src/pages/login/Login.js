@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Login.css'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { password } from 'dojo/_base/url';
 
 
 const Login = ({setUserApp}) => {
@@ -21,37 +22,55 @@ const Login = ({setUserApp}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Evita que o formulário seja enviado
-
-    // Agora você pode acessar os valores de 'formData.username' e 'formData.password' para o nome de usuário e senha.
-    const { username, password } = formData;
-    console.log('Nome de Usuário:', username);
-    console.log('Senha:', password);
-
-    axios.post('http://localhost:3002/login', { username:username, password:password }).
-      then(token => {
-      console.log("logado no express");
-      console.log(token);  
-      if(token){
-          //setUserApp(user.data);
-          axios.get('http://localhost:3002/userInfo').then(userInfo => {
-            setUserApp(userInfo.data)
-            navigate("/pageForms");  
-          }) 
+  
+    const { username, password } = formData; // Obtém os valores de username e password do formData
+  
+    if (username && password) {
+      
+      axios.post('http://localhost:3002/login', { username, password })
+        .then((response) => {
+          const token = response.data.token; // Obtém o token da resposta
           
-        }    
-    })
-    /*
-    const user = authenticateUser(username, password);
-    user.then(logado => {
-      localStorage.setItem('user', JSON.stringify(logado));
-      if (logado) {
-        navigate("/pageForms");
-      }
-    });
-    
-    */
-        
+          if (token) {
+            debugger
+            let data2 = JSON.stringify({
+              "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJDb21lcmNpYWwgRnVuZCAtIEJydW5vIiwidXNlclR5cGUiOiJDb21lcmNpYWwgRnVuZGlhcmlvIiwiaWF0IjoxNjk5NTcyMTAxLCJleHAiOjE2OTk1NzM5MDF9.5I8GgHk6G4hUFjcub4zyTYjFPV46H2HuFRr3UpdXy28"
+            })
+            let Data,config;
+            Data = {token:token}
+            
+            debugger
+            config = {
+              method: 'get',
+              maxBodyLength: Infinity,
+              url: 'http://localhost:3002/userInfo/',
+              headers: { 
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${token}` 
+              },
+              data : Data
+            };
+            debugger
+            if(config)
+              axios.request(config)
+              .then((userInfoResponse) => {
+                const userInfo = userInfoResponse.data;
+                  setUserApp(userInfo);
+                  navigate("/pageForms");
+                console.log(JSON.stringify(response.data));
+              })  
+            .catch((error) => {
+              console.error("Erro ao buscar informações do usuário:", error);
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao fazer login:", error);
+          // Trate o erro de maneira apropriada
+        });
+    }
   };
+  
 
   return (
     <div className="calcite-maps calcite-nav-top">
