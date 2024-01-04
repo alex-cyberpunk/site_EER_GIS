@@ -1,0 +1,13 @@
+@import url("https://js.arcgis.com/next/esri/themes/light/main.css");
+
+.tableDiv {
+  top: 35rem;
+  height: 20rem;
+  bottom: 0;
+  position: absolute;
+  right: 0;
+  left: 0;
+  flex: 1;
+  overflow: auto;
+  max-height: 20rem; /* Defina a altura máxima desejada */
+}

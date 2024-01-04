@@ -1,0 +1,573 @@
+{
+    "id": "18cd6b2d4a7-layer-2",
+    "showLegend": true,
+    "listMode": "show",
+    "disablePopup": false,
+    "title": "VCH - Areas",
+    "url": "https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/VCH/FeatureServer/3",
+    "visibility": true,
+    "layerType": "ArcGISFeatureLayer",
+    "refreshInterval": 0,
+    "layerDefinition": {
+        "minScale": 0,
+        "maxScale": 0,
+        "definitionExpression": "1=1",
+        "drawingInfo": {
+            "renderer": {
+                "type": "uniqueValue",
+                "field1": "Status",
+                "uniqueValueGroups": [
+                    {
+                        "classes": [
+                            {
+                                "label": "Regularizado Padrão Internacional\n",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        56,
+                                        168,
+                                        0,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Regularizado Padrão Internacional\n"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Regularizado",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        56,
+                                        168,
+                                        0,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Regularizado"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Contratado com Matrícula Retificada e com Geo INCRA\n",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        223,
+                                        115,
+                                        255,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Contratado com Matrícula Retificada e com Geo INCRA\n"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Contratado com Matrícula e com Geo INCRA\n",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        197,
+                                        0,
+                                        255,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Contratado com Matrícula e com Geo INCRA\n"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Contratado com Matrícula em nome do proprietário",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        132,
+                                        0,
+                                        168,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Contratado com Matrícula em nome do proprietário"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Contratado sem Matrícula",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        0,
+                                        169,
+                                        230,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Contratado sem Matrícula"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Contratado com Matrícula em nome de 3º",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        158,
+                                        85,
+                                        156,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Contratado com Matrícula em nome de 3º"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Protocolado Corredor de Ventos\n",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        60,
+                                        175,
+                                        153,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Protocolado Corredor de Ventos\n"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Mapeado com documentos",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        252,
+                                        146,
+                                        31,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Mapeado com documentos"
+                                    ]
+                                ]
+                            },
+                            {
+                                "label": "Mapeado sem documentos",
+                                "symbol": {
+                                    "type": "esriSFS",
+                                    "color": [
+                                        230,
+                                        230,
+                                        0,
+                                        255
+                                    ],
+                                    "outline": {
+                                        "type": "esriSLS",
+                                        "color": [
+                                            153,
+                                            153,
+                                            153,
+                                            64
+                                        ],
+                                        "width": 0.75,
+                                        "style": "esriSLSSolid"
+                                    },
+                                    "style": "esriSFSSolid"
+                                },
+                                "values": [
+                                    [
+                                        "Mapeado sem documentos"
+                                    ]
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "uniqueValueInfos": [
+                    {
+                        "label": "Regularizado Padrão Internacional\n",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                56,
+                                168,
+                                0,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Regularizado Padrão Internacional\n"
+                    },
+                    {
+                        "label": "Regularizado",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                56,
+                                168,
+                                0,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Regularizado"
+                    },
+                    {
+                        "label": "Contratado com Matrícula Retificada e com Geo INCRA\n",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                223,
+                                115,
+                                255,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Contratado com Matrícula Retificada e com Geo INCRA\n"
+                    },
+                    {
+                        "label": "Contratado com Matrícula e com Geo INCRA\n",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                197,
+                                0,
+                                255,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Contratado com Matrícula e com Geo INCRA\n"
+                    },
+                    {
+                        "label": "Contratado com Matrícula em nome do proprietário",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                132,
+                                0,
+                                168,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Contratado com Matrícula em nome do proprietário"
+                    },
+                    {
+                        "label": "Contratado sem Matrícula",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                0,
+                                169,
+                                230,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Contratado sem Matrícula"
+                    },
+                    {
+                        "label": "Contratado com Matrícula em nome de 3º",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                158,
+                                85,
+                                156,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Contratado com Matrícula em nome de 3º"
+                    },
+                    {
+                        "label": "Protocolado Corredor de Ventos\n",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                60,
+                                175,
+                                153,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Protocolado Corredor de Ventos\n"
+                    },
+                    {
+                        "label": "Mapeado com documentos",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                252,
+                                146,
+                                31,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Mapeado com documentos"
+                    },
+                    {
+                        "label": "Mapeado sem documentos",
+                        "symbol": {
+                            "type": "esriSFS",
+                            "color": [
+                                230,
+                                230,
+                                0,
+                                255
+                            ],
+                            "outline": {
+                                "type": "esriSLS",
+                                "color": [
+                                    153,
+                                    153,
+                                    153,
+                                    64
+                                ],
+                                "width": 0.75,
+                                "style": "esriSLSSolid"
+                            },
+                            "style": "esriSFSSolid"
+                        },
+                        "value": "Mapeado sem documentos"
+                    }
+                ]
+            }
+        }
+    },
+    "timeAnimation": true,
+    "showLabels": true,
+    "screenSizePerspective": true
+}

@@ -1,0 +1,7 @@
+@import url("https://js.arcgis.com/next/esri/themes/light/main.css");
+@import url("https://js.arcgis.com/calcite-components/1.8.0/calcite.css");
+
+/*Botao forms*/
+.esri-button {
+  background: #00A6A3;
+}

@@ -1,0 +1,15 @@
+module.exports = {
+  clearMocks: true,
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+  coveragePathIgnorePatterns: ["/node_modules/"],
+  coverageProvider: "v8",
+  coverageReporters: ["json", "text", "lcov", "clover"],
+  moduleDirectories: ["node_modules"],
+  moduleFileExtensions: ["js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node"],
+  moduleNameMapper: {},
+  modulePathIgnorePatterns: [],
+  notify: false,
+  notifyMode: "failure-change",
+  setupFiles: ['../../node_modules/dotenv-safe/config'],
+};
