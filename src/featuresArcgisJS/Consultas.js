@@ -338,7 +338,7 @@ function applyEditsToLayer(edits,url, item_id,operation='update') {
               }
               else if(operation==='delete'){
                 if (editsResult.deleteFeatureResults.length > 0) {
-                  //const objectId = editsResult.updatesFeatureResults[0].objectId;
+                  const objectId = editsResult.updatesFeatureResults[0].objectId;
                   resolve(true);
                 }
                 else{
@@ -347,7 +347,7 @@ function applyEditsToLayer(edits,url, item_id,operation='update') {
               }
               else if (operation==='update'){
                 if (editsResult.updateFeatureResults.length > 0) {
-                  //const objectId = editsResult.updatesFeatureResults[0].objectId;
+                  const objectId = editsResult.updatesFeatureResults[0].objectId;
                   resolve(true);
                 }
                 else{

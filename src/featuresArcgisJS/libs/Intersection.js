@@ -4,17 +4,18 @@ import * as projection from "@arcgis/core/geometry/projection.js";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference.js";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
 
-/**
- * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N
- * Verifica se geometrias intersectam um Conjunto de geometrias N->N
- * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
- * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
-*/
+
 
 class Intersection {
   constructor(geometryEngineMock = geometryEngine) {
     this.geometryEngine = geometryEngineMock;
   }
+  /**
+   * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N
+   * Retornando as geometrias que intersectam com area e as chaves que foram passadas
+   * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
+   * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
+  */
   async findIntersect(feat, featureData, chaves = null, chavesIntersect = null) {
     // feat pode ser 1 ou N
     // featureData é N
@@ -62,7 +63,11 @@ class Intersection {
       return [];
     }
   }
-
+  /**
+   * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N
+   * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
+   * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
+  */
   async verifyIntersect1ToN(polygonGraphics, update, projetos, codes) {
     callAlert(`verificando Interseccao...`, "Alert", "Waiting");
     let outSpatialReference = new SpatialReference({
@@ -90,7 +95,11 @@ class Intersection {
       return results.some((result) => result.length > 0);
     }
   }
-
+  /**
+   * Verifica se uma geometria intersecta com um Conjunto de geometrias N->N
+   * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
+   * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
+  */
   async verifyIntersectNToN(polygonGraphics, update, projetos, codes) {
     let intersectingFeatures = [];
     let equalfeatures;
