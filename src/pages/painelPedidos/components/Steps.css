@@ -1,0 +1,99 @@
+.steps-wrapper {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-flow: row wrap;
+  }
+  
+  .steps-wrapper li {
+    counter-increment: pledge-counter;
+    position: relative;
+    flex-basis: 25%;
+    width: 25%;
+    margin-top: 40px;
+    padding-top: 40px;
+    text-align: center;
+  }
+  
+  @media screen and (max-width: 800px) {
+    .steps-wrapper li {
+      flex-basis: 50%;
+      width: 50%;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .steps-wrapper li {
+      flex-basis: 100%;
+      width: 100%; } }
+  
+  .steps-wrapper li::before {
+    box-sizing: border-box;
+    content: counter(pledge-counter);
+    display: inline-block;
+    line-height: 1;
+    text-align: center;
+    border-radius: 50%;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, -50%);
+    z-index: 4; 
+    font-size: 2rem;
+    left: 50%;
+    height: 65px;
+    width: 65px; 
+    border: 1px solid;
+    background-color: #fff; }
+  
+  .steps-wrapper li::after {
+    content: '';
+    display: block;
+    border-radius: 0;
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    transform: translateY(-50%);
+    z-index: 2; }
+  
+  .steps-wrapper li:first-of-type::after {
+    border-radius: 10px 0 0 10px; }
+  
+  .steps-wrapper li:last-of-type::after {
+    border-radius: 0 10px 10px 0; }
+  
+  .step-content {
+    box-sizing: border-box;
+    margin-top: -1.5rem;
+    padding: 0 2rem; 
+    text-align: center; }
+
+.steps-wrapper li::before {
+    color: #00A6A3; /* Altera a cor do número */
+    background-color: #fff; /* Altera a cor de fundo do círculo */
+    border: 1px solid #00A6A3; /* Altera a cor da borda do círculo */
+    }
+    
+    
+    
+    .steps-wrapper li .step-content h2 {
+        color: #00A6A3;
+        padding-top: 25px; 
+      }
+ 
+
+/* Adicione este CSS para a linha horizontal entre os círculos */
+/* Adicione este CSS para a linha horizontal que passa pelo centro dos círculos */
+.steps-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 0.5rem; /* Altura da linha horizontal */
+    background-color: #00A6A3; /* Cor da linha */
+    top: calc(26.5rem); /* Posiciona a linha a partir do centro dos círculos */
+    left: 5%;
+    z-index: 1;
+  }
+  

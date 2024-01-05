@@ -1,0 +1,5 @@
+@import url("https://js.arcgis.com/next/esri/themes/light/main.css");
+
+  :root {
+    --calcite-ui-brand: #00A6A3;
+  }

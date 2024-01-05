@@ -1,0 +1,11 @@
+{
+    "_id": {
+      "$oid": "654acdfbbb0046942ed8f865"
+    },
+    "userId": 1,
+    "userName": "Comercial Fund - Bruno",
+    "password": "$2a$14$od2PY0wSFA.4got0ZyDszOSdMYgiSUgwDe6aYXhldPM2TV0dFOYIS",
+    "userType": "Comercial Fundiario",
+    "responsavelTopografia": "Bruno",
+    "email": "alex.matias@usp.br"
+  }

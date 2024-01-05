@@ -1,0 +1,4 @@
+npm init 
+@tmcw/togeojson
+@arcgis/core
+react

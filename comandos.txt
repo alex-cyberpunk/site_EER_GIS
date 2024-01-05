@@ -1,0 +1,2 @@
+node server em \src\server
+npm start

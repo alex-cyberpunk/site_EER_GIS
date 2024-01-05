@@ -1,0 +1,217 @@
+/* 
+.demo {
+  display: none
+}
+*/
+
+/* Theme Color Variable */
+:root {
+    --theme-color-dark: #65675E;
+  }
+  
+  .chart-card {
+      border: 0px;
+      background-color: inherit;  
+  }
+  
+  .sign-up-card .title {
+    font-size: 36px;
+    font-weight: 400;
+    margin-top: 21px;
+    margin-bottom: 10.5px;
+  }
+  
+  .sign-up-card .subtitle {
+    font-size: 16px;
+    margin-bottom: 10.5px;
+  }
+  
+  .btn {
+    text-decoration: none !important;
+  }
+  
+  .steps-wrapper a {
+    text-decoration: none !important
+  }
+  
+  /*  Button and Text Styling     */
+  .primary-color {
+    color: var(--theme-color-dark);
+  }
+  .primary-fill {
+    fill: var(--theme-color-dark);
+  }
+  
+
+  
+  a.svg-links:hover {
+    filter:brightness(85%);
+  }
+  
+  a.svg-links:focus {
+    outline:#ffffff solid 2px;
+  }
+  
+  /*   Edge to Edge picture and text   */
+  .edgetoedge-imgdiv {
+    padding:0px;
+    margin-top:-15px;
+    margin-left:-15px;
+  }
+  .edgetoedge-img {
+    object-fit:cover;
+    width: calc(100% + 30px);
+    max-height:80vh
+  }
+  .edgetoedge-text {
+    padding-left: 5%;
+  }
+  
+  /*  Row CSS Classes: Overrides site Theme colors for links in Category Cards, Summary Statistic Cards, and Contact Cards. 
+  Overrides <hr> color in Summary Statistic Cards, and email SVG in Contact Cards. 
+  Allows Cards to be used on rows with dark theme backgrounds that are other wise the same color as the Theme's Links. */
+  
+  .row-a-white hr.ss-title-spacer {
+    border-color: #ffffff
+  }
+  .row-a-white .category-panel .category-card, .row-a-white .backtotop, .row-a-white .contact-card, .row-a-white .contact-card .svgstore-image {
+    color: #ffffff;
+    text-decoration: none;
+    fill: #ffffff;
+  }
+  .row-a-white .summary-statistic-card a:link, .row-a-white .category-panel .category-card:link, .row-a-white .backtotop:link, .row-a-white .contact-card a:link {
+    color: #ffffff;
+  }
+  .row-a-white .summary-statistic-card a:visited, .row-a-white .category-panel .category-card:visited, .row-a-white .backtotop:visited, .row-a-white .contact-card a:visited  {
+    color: #ffffff;
+  }
+  .row-a-white .summary-statistic-card a:hover, .row-a-white .category-panel .category-card:hover, .row-a-white .backtotop:hover, .row-a-white .contact-card a:hover  {
+    color: #d0cacd;
+    outline-color: #ffffff;
+  }
+  .row-a-white .summary-statistic-card a:focus, .row-a-white .category-panel .category-card:focus, .row-a-white .backtotop:focus, .row-a-white .contact-card a:focus {
+    color: #d0cacd;
+    outline-color:#ffffff;
+  }
+  .row-a-white .category-panel .category-card:focus-visible {
+    color: #d0cacd;
+    outline: #ffffff solid 2px;
+  }
+  
+  .row-a-white .category-panel a:focus {
+    outline: #ffffff solid 2px;
+  }
+  
+  .row-a-white .summary-statistic-card a:active, .row-a-white .category-panel .category-card:active, .row-a-white .backtotop:active, .row-a-white .contact-card a:active  {
+    color: #d0cacd;
+  }
+  
+  
+  
+  /*  Manual Statistic Summary Text Card    */
+  @media (max-width: 412px){
+    .mobile-stats {font-size:15.4vw}  
+  }
+  @media (min-width: 413px) and (max-width: 512px){
+    .mobile-stats {font-size:15.7vw}  
+  }
+  @media (min-width: 513px) and (max-width: 767px){
+    .mobile-stats {font-size:80px}  
+  }
+  @media (min-width: 768px) and (max-width: 991px){
+    .mobile-stats {font-size:36px}
+  }
+  @media (min-width: 992px) and (max-width: 1199px){
+    .mobile-stats {font-size:48px}
+  }
+  @media (min-width: 1200px){
+    .mobile-stats {font-size:60px} 
+  }
+  
+  /*    HTML Bookmarks
+  --- fix for html bookmark focus on sites with fixed headers---
+  */
+  :target::before {
+    height: 120px;
+    margin-top: -120px;
+    visibility: hidden;
+    content: '';
+    position:relative;
+    display:block;
+    z-index:-1;
+  }
+  .navbar-contents a {
+    position: relative;
+    z-index:0;
+  }
+  /*end fix*/
+  
+  /*    Footer    */
+  .contact-info-alignment {
+    text-align: left !important;
+    padding-right: 20px;
+  }
+  
+  .logo-title-alignment {
+    margin-left : auto;
+    margin-right: auto;  
+  }
+  @media (min-width: 768px) {
+    .contact-info-alignment {
+      text-align: right;
+    }
+    .logo-title-alignment {
+      margin-left : initial;
+      margin-right: initial
+    }
+  }
+  
+  /*accessibility*/
+  
+  
+  *:focus-visible:not(a.ember-view, .svg-links)  {
+    border-style: solid;
+    border-width:3px;
+    text-decoration:none;
+  }
+  
+    /* Honors user device preference for no animation */
+  @media (prefers-reduced-motion: no-preference) {
+    html,
+    body {
+      scroll-behavior: smooth; /*note - smooth scrolling not supported in Safari */
+    }
+    
+    /*Bookmarked content subtle highlight */
+    :target {
+    animation: focused-anchor 6s ease-in-out 1;
+    text-shadow: none;
+    }
+    @keyframes focused-anchor {
+        0% { 
+          text-shadow: none; 
+        }
+        25% { 
+          text-shadow: 0 0 1px black, 0 0 25px yellow, 0 0 10px yellow
+        }
+        50% {
+          text-shadow: none; 
+        }
+        75% { 
+          text-shadow: 0 0 1px black, 0 0 25px yellow, 0 0 10px yellow
+        }
+        100% { 
+          text-shadow: none
+        }
+    }
+  }
+  p {
+    font-size:16px;
+  }
+  
+  .backtotop {
+    position:relative;
+    float:right;
+    font-size:12px
+  }
+  mark {background-color:#fff3ab}
