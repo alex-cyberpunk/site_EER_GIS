@@ -67,7 +67,7 @@
     "test:arcgisJSAPI": "jest --watch src/featuresArcgisJS/__tests__/unitTest",
     "test:server": "jest --watch src/server",
     "test": "jest --watchAll src/featuresArcgisJS/__tests__/unitTest",
-    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/jest-cli/bin/jest.js --runInBand --watch  src/featuresArcgisJS/__tests__/unitTest",   
+    "test:debug": "node --experimental-vm-modules --inspect-brk node_modules/jest-cli/bin/jest.js --runInBand --watch  src/featuresArcgisJS/__tests__/unitTest",
     "eject": "react-scripts eject",
     "copy": "ncp ./node_modules/@arcgis/core/assets ./public/assets",
     "postinstall": "npm run copy"
@@ -102,7 +102,6 @@
   "devDependencies": {
     "@babel/core": "^7.23.2",
     "@babel/plugin-transform-modules-commonjs": "^7.23.0",
-    "@babel/preset-env": "^7.23.2",
     "@vitest/coverage-v8": "^1.1.0",
     "babel-jest": "^29.7.0",
     "chai": "^4.3.10",

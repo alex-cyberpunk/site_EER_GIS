@@ -3,6 +3,21 @@ class FieldOperations {
         this.feat = feat;
     }
 
+    deleteaAndFilterFields(featureLayer, appManager) {
+        featureLayer.load().then(() => {
+  
+        if(appManager.mapaPedidos.hasOwnProperty('whereClause')) {
+      
+          let replacedQuery = appManager.mapaPedidos.whereClause.replace(/{/g, "'");
+          replacedQuery = replacedQuery.replace(/}/g, "'");
+          replacedQuery = replacedQuery.replace(/user/g, userApp.userName);
+          replacedQuery = replacedQuery.replace(/"/g, "'");
+          featureLayer.definitionExpression =replacedQuery;
+          }
+          if(appManager.mapaPedidos.hasOwnProperty('fields'))  deleteFields(featureLayer, appManager.mapaPedidos.fields);
+        });
+      }
+
     lockFieldsTable(lockFields, editable) {
         this.feat.layer.fields.forEach((field) => {
             if (lockFields.includes(field.name)) {

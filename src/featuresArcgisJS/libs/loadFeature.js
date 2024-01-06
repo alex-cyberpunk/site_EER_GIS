@@ -12,21 +12,7 @@ class FeatureLoader {
         this.tableDiv = tableDiv;
         this.formDiv = formDiv;
     }
-    [deleteaAndFilterFields](featureLayer, appManager) {
-      featureLayer.load().then(() => {
-
-      if(appManager.mapaPedidos.hasOwnProperty('whereClause')) {
-    
-        let replacedQuery = appManager.mapaPedidos.whereClause.replace(/{/g, "'");
-        replacedQuery = replacedQuery.replace(/}/g, "'");
-        replacedQuery = replacedQuery.replace(/user/g, userApp.userName);
-        replacedQuery = replacedQuery.replace(/"/g, "'");
-        featureLayer.definitionExpression =replacedQuery;
-        }
-        if(appManager.mapaPedidos.hasOwnProperty('fields'))  deleteFields(featureLayer, appManager.mapaPedidos.fields);
-      });
-    }
-    loadLayer(url, layerID,appManager) {
+    loadLayer(url, layerID,appManager=null) {
       return new Promise((resolve, reject) => {
         const featureLayer = new FeatureLayer({
           url: url,
@@ -34,13 +20,15 @@ class FeatureLoader {
           layerId: layerID,
           definitionExpression: "1=1"
         });
-
-        featureLayer.load().then(() => {
+        if(appManager){
+          featureLayer.load().then(() => {
             this.deleteaAndFilterFields(featureLayer, appManager);      
             resolve(featureLayer);
-        }).catch((error) => {
-          reject(error);
-        });
+            }).catch((error) => {
+              reject(error);
+            });  
+        }
+        
       });
     }
     

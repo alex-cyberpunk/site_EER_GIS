@@ -1,14 +1,20 @@
 /// flowJustify deveria fazer parte dessa classe
-import  {retornaListAreaCode} from '../Consultas.js' 
+import  {queryFeature} from '../Consultas.js' 
+import FeatureLoader from "./loadFeature.js";
 import * as projection from "@arcgis/core/geometry/projection.js";
 import SpatialReference from "@arcgis/core/geometry/SpatialReference.js";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
-
+import { callAlert } from '../../pages/sharedComponents/SucessMessage.js';
 
 
 class Intersection {
-  constructor(geometryEngineMock = geometryEngine) {
-    this.geometryEngine = geometryEngineMock;
+  constructor(Projection=projection,GeometryEngine=geometryEngine) {
+    if(Projection){
+      this.projection = Projection;
+    }
+    if(GeometryEngine){
+      this.geometryEngine = GeometryEngine;
+    }
   }
   /**
    * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N
@@ -16,8 +22,8 @@ class Intersection {
    * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
    * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
   */
-  async findIntersect(feat, featureData, chaves = null, chavesIntersect = null) {
-    // feat pode ser 1 ou N
+  async verifyIntersect1ToN(feat, featureData, chaves = null, chavesIntersect = null) {
+    // feat é 1
     // featureData é N
     try {
       const intersectingFeatures = [];
@@ -64,40 +70,7 @@ class Intersection {
     }
   }
   /**
-   * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N
-   * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
-   * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
-  */
-  async verifyIntersect1ToN(polygonGraphics, update, projetos, codes) {
-    callAlert(`verificando Interseccao...`, "Alert", "Waiting");
-    let outSpatialReference = new SpatialReference({
-      wkid: 102100,
-    });
-
-    const promises = polygonGraphics.map(async (graphic) => {
-      const projectedGeometry = projection.project(graphic.geometry, outSpatialReference);
-      graphic.geometry = projectedGeometry;
-    });
-
-    const featureDataPromises = codes.map((code) =>
-      retornaListAreaCode(projetos, true, update.Projeto, code)
-    );
-    const featureDataList = await Promise.all(featureDataPromises);
-
-    const intersectPromises = featureDataList
-      .filter((featureData) => featureData.length > 0)
-      .map((featureData) => this.findIntersect(graphic.geometry, featureData, "linha_code"));
-
-    if (intersectPromises.length === 0) {
-      return false;
-    } else {
-      const results = await Promise.all(intersectPromises);
-      return results.some((result) => result.length > 0);
-    }
-  }
-  /**
    * Verifica se uma geometria intersecta com um Conjunto de geometrias N->N
-   * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
    * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
   */
   async verifyIntersectNToN(polygonGraphics, update, projetos, codes) {
@@ -148,6 +121,50 @@ class Intersection {
     }
     return intersectingFeatures;
   }
+  /**
+   * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N com os layers dos projetos
+   * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
+   * @param {[object]} polygonGraphics - Array Geometria no formato feature Layer (attributes, geometry)
+   * @param {object} projeto - Chaves que serão retornadas 
+  */
+  async verifyIntersectProjects(polygonGraphics, urlProjeto, layerIds) {
+    callAlert(`verificando Interseccao...`, "Alert", "Waiting");
+    let outSpatialReference = new SpatialReference({
+      wkid: 102100,
+    });
+
+    const promises = polygonGraphics.map(async (graphic) => {
+      const projectedGeometry = this.projection.project(graphic.geometry, outSpatialReference);
+      graphic.geometry = projectedGeometry;
+    });
+
+    let featureLayer;
+    let feature;
+    let feats;
+    
+    const featureDataPromises = layerIds.map((layerId) => {
+      feature=new FeatureLoader(urlProjeto, layerId);
+      feature.loadLayer(urlProjeto, layerId).
+      then((featureLayer) => {
+        feats = queryFeature(featureLayer, '1=1', layerId);
+        return feats;
+        })
+    });
+    const featureDataList = await Promise.all(featureDataPromises);
+
+    const intersectPromises = featureDataList
+      .filter((featureData) => featureData.length > 0)
+      .map((featureData) => this.findIntersect(graphic.geometry, featureData,"numPedido" ,"linha_code"));
+
+    if (intersectPromises.length === 0) {
+      return false;
+    } else {
+      const results = await Promise.all(intersectPromises);
+      return results.some((result) => result.length > 0);
+    }
+  }
+  
+  
 }
 
 export default Intersection;
