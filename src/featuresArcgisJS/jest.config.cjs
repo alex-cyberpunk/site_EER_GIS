@@ -11,5 +11,6 @@ module.exports = {
   modulePathIgnorePatterns: [],
   notify: false,
   notifyMode: "failure-change",
+  testEnvironment: "jsdom",
   setupFiles: ['../../node_modules/dotenv-safe/config'],
 };

@@ -40,22 +40,12 @@ async function queryFeature(featureLayer,whereClause,returnGeometry=false,outFie
     });
 }
 
-//*async function retornaListAreaCode_new(Projetos, geometria, nomeDoMapa, IdLayer) {*
-//  // Encontre o ID do item correspondente ao nome do mapa
-//  const url = Projetos[nomeDoMapa].url;
-//  
-//  // Carregue o PortalItem
-//    const featureLayer = new FeatureLayer({
-//      url: url,
-//      layerId: IdLayer, // Suponho que você queira a camada com índice 3
-//      outFields: ["area_code"],
-//      geometry: geometria
-//    });
-//    const resultes=await queryByFieldValue(featureLayer,whereClause,returnGeometry=false,outFields= ["*"])
-//    return resultes;
-//  }
-//
+async function retornaListAreaCode(url, geometria, layerId) {
+  const featureLoader = new FeatureLoader();
+  const featureLayer = await featureLoader.loadLayer(this.url, this.layerId);
+  queryByFieldValue(featureLayer,'1=1',returnGeometry=geometria,outFields= [key])
 
+}
 // Operacoes dos feature layers dos Projetos
 function findFeatLyr(map, searchLayer) {
   return new Promise((resolve, reject) => {
@@ -79,4 +69,5 @@ function findFeatLyr(map, searchLayer) {
 
 
   export{ findFeatLyr,
-          queryFeature};
+          queryFeature,
+          retornaListAreaCode};

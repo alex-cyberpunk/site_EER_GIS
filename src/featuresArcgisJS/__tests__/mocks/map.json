@@ -1,0 +1,30 @@
+{
+    "_emitter": {
+        "_target": null,
+        "_listenersMap": null
+    },
+    "_basemapCache": {
+        "gray-vector": {
+            "baseMapLayers": [
+                {
+                    "id": "gray-base-layer",
+                    "styleUrl": "https://cdn.arcgis.com/sharing/rest/content/items/291da5eab3a0412593b66d384379f89f/resources/styles/root.json",
+                    "layerType": "VectorTileLayer",
+                    "title": "Light Gray Base",
+                    "visibility": true,
+                    "opacity": 1
+                },
+                {
+                    "id": "gray-reference-layer",
+                    "styleUrl": "https://cdn.arcgis.com/sharing/rest/content/items/1768e8369a214dfab4e2167d5c5f2454/resources/styles/root.json",
+                    "layerType": "VectorTileLayer",
+                    "title": "Light Gray Reference",
+                    "isReference": true,
+                    "visibility": true,
+                    "opacity": 1
+                }
+            ],
+            "title": "Basemap"
+        }
+    }
+}

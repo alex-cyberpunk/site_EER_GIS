@@ -4,8 +4,8 @@ import axios from 'axios';
 
 async function retornaNovaAreaCode(nomeProjeto,layerId, projetos) {
   let newAreaCode;
-  retornaListAreaCode(projetos, true, nomeProjeto,layerId).
-  then((props)=>{
+  queryFeature(featureLayer,whereClause,returnGeometry=false,outFields= ["*"])
+    .then((props)=>{
     if(props){
       let maxNumber = 0;
         for (const obj of props) {
@@ -34,53 +34,7 @@ async function retornaNovaAreaCode(nomeProjeto,layerId, projetos) {
     
   }
   
-async function editsToLayer(editfeature, url,layerId,key,userId,report,operation="update",urlDelete=null,layerIdDelete=null,editFeatureDelete=null) {
-  if(url!==null && layerId!==null)
-    applyEditsToLayer(editfeature, 
-      url,layerId,operation)
-    .then((results) => {
-      
-      if(results){
-        if(urlDelete!==null && layerIdDelete!==null){
-          applyEditsToLayer( editFeatureDelete, 
-            urlDelete,layerIdDelete,"delete")
-          .then((results) => {
-            if (results)
-              callAlert(` Propriedade excluida do mapa de pedidos`,'Alert','Success');
-          })
-        }
-        callAlert(`Propriedade adicionada para aprovação do líder`,'Alert','Success');
-        
-        let value;
 
-        if(Array.isArray(editfeature)) value=editfeature[0];
-        else value=editfeature;
-
-        axios.post('http://localhost:3002/enviarEmail', 
-          {values:{
-            area_code:value.attributes.area_code,
-            Projeto:value.attributes.Projeto,
-            numPedido:value.attributes.OBJECTID,
-            responsavelTopografia:value.attributes.Responsavel_Topografia,
-            responsavelComercial:value.attributes.Responsavel_Comercial,
-          },
-          userIds:[userId],
-          key:key}).
-          then(teste => {
-            console.log(teste)
-          })
-        
-        report.ObjectID=results
-        axios.post('http://localhost:3002/logReport',
-          {json:{report}}).
-          then(log=>{
-            console.log(log)
-          })   
-      } 
-        
-        
-    }) 
-}
   
 function handleApprove (objectIds,layer,appManager,userId,key,userType,Analise) {
       if (objectIds.length > 0){

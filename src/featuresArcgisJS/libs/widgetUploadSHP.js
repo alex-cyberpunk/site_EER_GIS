@@ -3,19 +3,20 @@ import request from "@arcgis/core/request.js";
 import Field from "@arcgis/core/layers/support/Field.js";
 import Graphic from "@arcgis/core/Graphic.js";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
-import { returnEditFeatures ,retornaListAreaCode} from "../Consultas.js";
-import { findIntersect } from "../verifyIntersect.js";
+import {retornaListAreaCode} from "../Consultas.js";
+import createFeature from "./createFeatures.js";
+import Intersection from "./Intersection.js";
+
 
 class loadSHPinFeaturelayer {
-  constructor(view, map, isChecked, userApp, appManager) {
+  constructor(view, map, userApp, appManager) {
     this.view = view;
     this.map = map;
-    this.isChecked = isChecked;
     this.userApp = userApp;
     this.appManager = appManager;
   }
 
-  [addShapefileToMap](featureCollection, map, view, document) {
+  #addShapefileToMap(featureCollection, map, view, document) {
     let sourceGraphics = [];
 
     const layers = featureCollection.layers.map((layer) => {
@@ -44,12 +45,12 @@ class loadSHPinFeaturelayer {
     document.getElementById('upload-status').innerHTML = "";
   }
 
-  async [generateFeaturesFromSHP](response, appManager, userApp, projeto) {
+  async #generateFeaturesFromSHP(response, appManager, userApp, projeto) {
     let addFeatures = [];
     let hasAreaCode = response.data.featureCollection.layers[0].layerDefinition.fields.some(field => field.name === 'area_code');
     if (hasAreaCode) {
       const propsPedidos = response.data.featureCollection.layers[0].featureSet.features;
-      retornaListAreaCode(appManager.Projetos, true, projeto, 3).
+      retornaListAreaCode(appManager.Projetos[projeto].url, true, 3).
         then(async (propsProjetos) => {
           let features = response.data.featureCollection.layers[0].featureSet.features.map(feature => {
             feature.attributes.Responsavel_Topografia = userApp.userName;
@@ -59,8 +60,8 @@ class loadSHPinFeaturelayer {
             feature.rings = feature.geometry.rings;
             return feature;
           });
-
-          let feat = await returnEditFeatures(features, null, features[0].geometry.spatialReference);
+          const returnEditFeatures = new createFeature(features, features[0].geometry.spatialReference);
+          let feat = await returnEditFeatures.returnEditFeatures(features, null, features[0].geometry.spatialReference);
           addFeatures = addFeatures.concat(feat);
         })
     }
@@ -70,6 +71,7 @@ class loadSHPinFeaturelayer {
 
     async function generateFieldIntersection(feature, projeto, propsPedidos, propsProjetos) {
       //Construction of an geojson with the error of intersection for orientation to topography
+      const intersection = new Intersection();
       //Verify if area_code has the pattener PROP-XXX-NNNN
       const pattern = /^PROP-[A-Z]{3}-\d{4}$/;
       if (pattern.test(feature.attributes.area_code)) {
@@ -80,8 +82,9 @@ class loadSHPinFeaturelayer {
           feature.attributes.erro = 'Projeto difere area_code'
         }
         else {
-          //Verify if has intersection with the Projetct
-          const results = findIntersect(feature.geometry, propsProjetos, 'area_code');
+          //Verify if has intersection with the Project Layer
+          
+          const results = intersection.verifyIntersect1ToN(feature.geometry, propsProjetos, 'area_code');
           let index = results.findIndex(obj => obj.area_code === feature.attributes.area_code);
           if (index !== -1) { let removedObject = results.splice(index, 1)[0]; }
           if (results.length > 0) {
@@ -98,7 +101,7 @@ class loadSHPinFeaturelayer {
       }
       //Verify if has intersection with the Layer itself
 
-      const resultsPedidos = findIntersect(feature.geometry, propsPedidos, 'area_code');
+      const resultsPedidos = intersection.verifyIntersect1ToN(feature.geometry, propsPedidos, 'area_code');
       if (resultsPedidos.length > 0) {
         feature.attributes.erro = 'O layer se auto-intersecta'
         feature.attributes.interseccoes = JSON.stringify(resultsPedidos);
@@ -109,7 +112,7 @@ class loadSHPinFeaturelayer {
     }
   }
 
-  async [generateFeatureCollection](fileName, view, portalUrl) {
+  async #generateFeatureCollection(fileName, view, portalUrl) {
       let name = fileName.split(".");
       // Chrome adds c:fakepath to the value - we need to remove it
       name = name[0].replace("c:\\fakepath\\", '');
@@ -159,7 +162,7 @@ class loadSHPinFeaturelayer {
       }
   }
     
-  function loadShp(view, map, isChecked) {
+  async loadShp(document=document) {
     const portalUrl = "https://www.arcgis.com";
 
             document.getElementById("uploadForm").addEventListener("change", async(event) => {
@@ -169,8 +172,8 @@ class loadSHPinFeaturelayer {
                   
                 const response=await this.generateFeatureCollection(fileName)
                   
-                  if(isChecked) this.generateFeaturesFromSHP(response.data.featureCollection,map,view);
-                  else this.addShapefileToMap(response.data.featureCollection,map,view);
+                  if(this.isChecked) this.generateFeaturesFromSHP(response.data.featureCollection,this.map,this.view);
+                  else this.addShapefileToMap(response.data.featureCollection,this.map,this.view);
                   
               }
               else {
@@ -190,3 +193,4 @@ class loadSHPinFeaturelayer {
 }
 
     
+export default loadSHPinFeaturelayer;

@@ -21,7 +21,8 @@ module.exports = {
   },
   transformIgnorePatterns: [
     "/node_modules/(?!axios).+\\.js$"
-  ]
+  ],
+  testEnvironment: "jsdom",
   //testTimeout: 60000,
 };
 
