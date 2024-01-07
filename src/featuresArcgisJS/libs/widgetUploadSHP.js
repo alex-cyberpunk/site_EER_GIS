@@ -55,7 +55,7 @@ class loadSHPinFeaturelayer {
       const propsPedidos = featureCollection.layers[0].featureSet.features;
       retornaListAreaCode(this.appManager.Projetos[this.projeto].url, true, 3).
         then(async (propsProjetos) => {
-          let features = featureCollection.layers[0].featureSet.features.map(feature => {
+          featureCollection.layers[0].featureSet.features.map(feature => {
             feature.attributes.Responsavel_Topografia = this.userApp.userName;
             feature.attributes.Responsavel_Topografia_ID = this.userApp.userId;
             feature.attributes.TipoDeOperacaoNaBase = 'Edicao';
@@ -63,6 +63,7 @@ class loadSHPinFeaturelayer {
             feature.rings = feature.geometry.rings;
             return feature;
           });
+        console.log(featureCollection.layers[0].featureSet.features);   
         })
       //ApplyEdits
 

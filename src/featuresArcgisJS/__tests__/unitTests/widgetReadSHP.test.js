@@ -21,7 +21,8 @@ jest.mock('../../Consultas.js', () => {
 
   const jsonPath = path.resolve(__dirname, '../mocks/features/Feature_layers/Areas.json');
   const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-
+  
+  //Flag in the PROP-SGR-0058
   let filteredFeatures = jsonData.features.
                                 filter(feature => 
                                 feature.attributes.
@@ -161,6 +162,16 @@ jest.mock('@arcgis/core/request.js', () => {
   
   const jsonPath = path.resolve(__dirname, '../mocks/features/response.data-request-widgetSHP.json');
   const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    console.log(jsonData);
+   jsonData.featureCollection.layers[0].featureSet.features.map(feature => {
+    if (feature.attributes.area_code === 'PROP-JAG-0574') {
+      feature.geometry = 'PROP-JAG-0574';
+    }
+    if(feature.attributes.area_code === 'PROP-JAG-0415') {
+      feature.geometry = 'PROP-JAG-0415';
+    }
+    return feature;
+  });
 
   return jest.fn().mockImplementation((url, options) => {
     if (url.includes('/sharing/rest/content/features/generate') && options.responseType === 'json') {
@@ -174,11 +185,26 @@ jest.mock('../../libs/Intersection.js', () => {
   return jest.fn().mockImplementation(() => {
     return {
       verifyIntersect1ToN: jest.fn((geometry, featureGeometry) => {
-        if (geometry === "PROP-JAG-0440") {
+        if (geometry === "PROP-JAG-0339" && featureGeometry === "PROP-SGR-0058" ) {
           return [{
-            area_code: "PROP-JAG-0440",
+            area_code: "PROP-JAG-0339",
             areaPlanar: 2,
-            area_code_intersect: "PROP-JAG-0441"
+            area_code_intersect: "PROP-SGR-0058"
+          }];
+        }
+        if (geometry === "PROP-JAG-0415" && featureGeometry === "PROP-JAG-0574" ) {
+          return [{
+            area_code: "PROP-JAG-0415",
+            areaPlanar: 2,
+            area_code_intersect: "PROP-JAG-0574"
+          }];
+        }
+        //A polygon always intersect itself , but its expected that not appear in results
+        if (geometry === "PROP-JAG-0415" && featureGeometry === "PROP-JAG-0415" ) {
+          return [{
+            area_code: "PROP-JAG-0415",
+            areaPlanar: 2,
+            area_code_intersect: "PROP-JAG-0415"
           }];
         }
         else return [];

@@ -112,6 +112,56 @@
                     "aero_code"
                 ]
             }
+        },
+        "JAG": {
+            "url": "https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/VCH/FeatureServer/",
+            "id": "ff1beab5be6b4496a83986e2c5c1be66",
+            "Areas": {
+                "layerId": [
+                    3
+                ],
+                "visibleFields": [
+                    "area_code",
+                    "Proprietario_principal",
+                    "Imovel",
+                    "Matricula",
+                    "Status"
+                ],
+                "fields": [
+                    "area_code",
+                    "Proprietario_principal",
+                    "Imovel",
+                    "Matricula",
+                    "Status"
+                ],
+                "lockFields": [
+                    "area_code",
+                    "Proprietario_principal",
+                    "Imovel",
+                    "Matricula",
+                    "Status"
+                ],
+                "Topografia": "Bruno",
+                "ID_Topografia": 2,
+                "Comercial_Fundiario": "Comercial Fund - Bruno",
+                "ID_Comercial_Fundiario": 1
+            },
+            "Aeros": {
+                "layerId": [
+                    0
+                ],
+                "visibleFields": [
+                    "aero_code",
+                    "Status"
+                ],
+                "fields": [
+                    "aero_code",
+                    "Status"
+                ],
+                "lockFields": [
+                    "aero_code"
+                ]
+            }
         }
     }
 }
