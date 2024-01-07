@@ -1,0 +1,117 @@
+{
+    "_id": "6556543a898eca1f32460424",
+    "userType": "Comercial Fundiario",
+    "url": "https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/Pedidos/FeatureServer/",
+    "mapaPedidos": {
+        "url": "https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/Pedidos/FeatureServer/",
+        "printIntersect": false,
+        "tipoResponsavel": [
+            "Responsavel_Comercial"
+        ],
+        "whereClause": "Responsavel_Comercial={user} "
+    },
+    "formsPedidos": {
+        "url": "https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/Pedidos/FeatureServer/",
+        "TiposOperacao": [
+            "Inclusao",
+            "Edicao"
+        ],
+        "visibleFields": [
+            "area_code",
+            "Proprietario_principal",
+            "Imovel",
+            "Matricula",
+            "Status"
+        ],
+        "idItem": 0
+    },
+    "tablePedidos": {
+        "url": "https://services8.arcgis.com/20FPDKcmejqS25Vb/arcgis/rest/services/Pedidos/FeatureServer/",
+        "lockFields": [
+            "Projeto",
+            "Responsavel_Topografia",
+            "Responsavel_Comercial",
+            "TipodeOperacaonabase",
+            "Aprovacao"
+        ],
+        "visibleFields": [
+            "area_code",
+            "Proprietario_principal",
+            "Imovel",
+            "Matricula",
+            "Status",
+            "Gleba",
+            "area"
+        ],
+        "fields": [
+            "area_code",
+            "Imovel",
+            "Matricula",
+            "Status",
+            "Gleba",
+            "area"
+        ],
+        "whereClause": "Responsavel_Comercial={user}"
+    },
+    "contagemPedidos": {
+        "pedidosResources": {
+            "Title": "Pedidos em espera de conclusao",
+            "whereClause": "( Analise  = \"Topografia\")"
+        }
+    },
+    "Layers": [
+        "Areas"
+    ],
+    "Projetos": {
+        "SGR": {
+            "url": "https://services.arcgis.com/UFhefLcRQpBCvtQB/arcgis/rest/services/VCH/FeatureServer/",
+            "id": "ff1beab5be6b4496a83986e2c5c1be66",
+            "Areas": {
+                "layerId": [
+                    3
+                ],
+                "visibleFields": [
+                    "area_code",
+                    "Proprietario_principal",
+                    "Imovel",
+                    "Matricula",
+                    "Status"
+                ],
+                "fields": [
+                    "area_code",
+                    "Proprietario_principal",
+                    "Imovel",
+                    "Matricula",
+                    "Status"
+                ],
+                "lockFields": [
+                    "area_code",
+                    "Proprietario_principal",
+                    "Imovel",
+                    "Matricula",
+                    "Status"
+                ],
+                "Topografia": "Bruno",
+                "ID_Topografia": 2,
+                "Comercial_Fundiario": "Comercial Fund - Bruno",
+                "ID_Comercial_Fundiario": 1
+            },
+            "Aeros": {
+                "layerId": [
+                    0
+                ],
+                "visibleFields": [
+                    "aero_code",
+                    "Status"
+                ],
+                "fields": [
+                    "aero_code",
+                    "Status"
+                ],
+                "lockFields": [
+                    "aero_code"
+                ]
+            }
+        }
+    }
+}

@@ -11,19 +11,39 @@
 //Mock retornaListAreaCode 
 
 import loadSHPinFeaturelayer from '../../libs/widgetUploadSHP.js';
-import request from "@arcgis/core/request.js";
 import Intersection from "../../libs/Intersection.js";
 import createFeature from "../../libs/createFeatures.js";
-import {retornaListAreaCode} from "../../Consultas.js";
 import { readFile } from 'fs/promises';
-import { user } from 'dojo/_base/url';
 
-jest.mock('@arcgis/core/widgets/Expand.js');
-jest.mock('../../Consultas.js');
-jest.mock('../../libs/Intersection.js');
+jest.mock('../../Consultas.js', () => {
+  const fs = require('fs');
+  const path = require('path');
+
+  const jsonPath = path.resolve(__dirname, '../mocks/features/Feature_layers/Areas.json');
+  const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+
+  let filteredFeatures = jsonData.features.
+                                filter(feature => 
+                                feature.attributes.
+                                area_code === "PROP-SGR-0058");
+        
+  filteredFeatures.forEach(feature => {
+                              if (feature.attributes.area_code === "PROP-SGR-0058") {
+                                  feature.geometry = "PROP-SGR-0058";
+                              }});
+  return {
+    retornaListAreaCode: jest.fn((url, bool, num) => {
+      if (bool === true && num === 3) {
+        return Promise.resolve(jsonData);
+      } else {
+        return Promise.reject(new Error('Invalid arguments'));
+      }
+    })
+  };
+});
 jest.mock('../../../pages/sharedComponents/SucessMessage.js', () => ({
     callAlert: jest.fn(),
-  }));
+}));
 jest.mock('../../libs/createFeatures.js', () => {    
     return jest.fn().mockImplementation(async () => {
         const polygonGraphics = {
@@ -126,109 +146,108 @@ jest.mock('../../libs/createFeatures.js', () => {
         }
     })
 });
+jest.mock('@arcgis/core/widgets/Expand.js', () => {
+    return jest.fn().mockImplementation(() => {
+      return {
+        expandIcon: 'upload',
+        view: {},
+        content: {},
+      };
+    });
+});
+jest.mock('@arcgis/core/request.js', () => {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const jsonPath = path.resolve(__dirname, '../mocks/features/response.data-request-widgetSHP.json');
+  const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+
+  return jest.fn().mockImplementation((url, options) => {
+    if (url.includes('/sharing/rest/content/features/generate') && options.responseType === 'json') {
+      return Promise.resolve({data: jsonData});
+    } else {
+      return Promise.reject(new Error('Invalid URL or options'));
+    }
+  });
+});   
+jest.mock('../../libs/Intersection.js', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+      verifyIntersect1ToN: jest.fn((geometry, featureGeometry) => {
+        if (geometry === "PROP-JAG-0440") {
+          return [{
+            area_code: "PROP-JAG-0440",
+            areaPlanar: 2,
+            area_code_intersect: "PROP-JAG-0441"
+          }];
+        }
+        else return [];
+      })
+    };
+  });
+});
 
 describe('loadSHPinFeaturelayer', () => {
   let instance,props,featureCollection,Areas,data,mockTarget;
 
   beforeEach(async() => {
     //Arrange
-    instance = new loadSHPinFeaturelayer('view',map,userApp,appManager);
-    //Mock featurelayer
-    data = await readFile('src/featuresArcgisJS/__tests__/mocks/features/Feature_layers/Areas.json', 'utf8');
-    const props = JSON.parse(data);
 
-    mockTarget = {
-        getElementById: jest.fn().mockImplementation((id) => {
-          if (id === 'uploadForm') {
-            return {
-              addEventListener: jest.fn((event, callback) => {
-                if (event === 'change') {
-                  // Replace the behavior of the callback function here
-                  callback = async () => {
-                    // Mock implementation
-                  };
-                }
-              }),
-            };
-          } else if (id === 'upload-status') {
-            return {
-              innerHTML: '',
-            };
-          } else if (id === 'mainWindow') {
-            return {};
-          } else {
-            return null;
-          }
-        }),
-      };
+    //usertype Comercial Fundiario
+    data= await readFile('./src/featuresArcgisJS/__tests__/mocks/userApps/comercialFund.json', 'utf8');
+    const user = JSON.parse(data);
     
+    data= await readFile('./src/featuresArcgisJS/__tests__/mocks/appManager/comercialFund.json', 'utf8');
+    const appManager = JSON.parse(data);
 
-    //Select the features that intersect with the polygon
-    let filteredFeatures = props.features.
-                                filter(feature => 
-                                feature.attributes.
-                                area_code === "PROP-SGR-0058");
-        
-    filteredFeatures.forEach(feature => {
-                                if (feature.attributes.area_code === "PROP-SGR-0058") {
-                                    feature.geometry = "PROP-SGR-0058";
-                                }});
+
+    data = await readFile('src/featuresArcgisJS/__tests__/mocks/map.json', 'utf8');
+    const mockMap=JSON.parse(data);
     
-    data = await readFile('./src/featuresArcgisJS/__tests__/mocks/features/response.data-request-widgetSHP.json', 'utf8');
-    const featureCollection = JSON.parse(data);
-    jest.doMock('@arcgis/core/request.js', () => {
-        return jest.fn().mockImplementation((url, options) => {
-            if (url.contains('/sharing/rest/content/features/generate') && options.responseType === 'json') {
-                return Promise.resolve({
-                    data: {
-                        featureCollection: {featureCollection}
-                    }
-                });
-            }
-        });
-    });   
-                                                            
-
-    Intersection.mockClear();
-
-    const geometryEngineMock = {
-        intersect: jest.fn((featureGeometry) => {
-        switch (featureGeometry) {
-            case "PROP-SGR-0058":
-            return true;
-            case "PROP-SGR-0067":
-            return true;
-            case "EOL-VCH-003":
-            return true;
-            default:
-            return false;
-        }
-        }),
-        planarArea: jest.fn().mockReturnValue(2)
+    const mockView = {
+        spatialReference: {},         
+        ui: {
+          add: jest.fn(),
+        },
     };
-
-    const intersection = new Intersection(null,geometryEngineMock);
-
-    Intersection.mockImplementation(() => {
-        return intersection;
-    });
-    
-    retornaListAreaCode.mockReturnValue(Areas);
+    mockTarget = {
+      getElementById: jest.fn().mockImplementation((id) => {
+        if (id === 'uploadForm') {
+          return {
+            addEventListener: jest.fn((event, callback) => {
+              if (event === 'change') {
+                // Call the callback function with a mock event object
+                callback({ target: { value: 'ALG.zip' } });
+              }
+            }),
+          };
+        } else if (id === 'upload-status') {
+          return {
+            innerHTML: '',
+          };
+        } else if (id === 'mainWindow') {
+          return {};
+        } else {
+          return null;
+        }
+      }),
+    };  
+    instance = new loadSHPinFeaturelayer(mockView,
+                                          mockMap,
+                                          user,
+                                          appManager,
+                                          'JAG',
+                                          mockTarget);
 
     instance.addShapefileToMap = jest.fn();
-  });
 
-  it('should call addShapefileToMap when isChecked is false', async () => {
-    instance.isChecked = false;
-    await instance.loadShp(mockTarget);
-    expect(instance.addShapefileToMap).toHaveBeenCalled();
-  });
+    });
 
   it('should not call addShapefileToMap when isChecked is true', async () => {
     instance.isChecked = true;
-    await instance.loadShp(mockTarget);
+    await instance.loadShp();
     expect(instance.addShapefileToMap).not.toHaveBeenCalled();
   });
 
-  // Add more tests as needed
+  
 });

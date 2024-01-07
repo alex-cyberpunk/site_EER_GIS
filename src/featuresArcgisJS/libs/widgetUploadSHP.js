@@ -3,20 +3,23 @@ import request from "@arcgis/core/request.js";
 import Field from "@arcgis/core/layers/support/Field.js";
 import Graphic from "@arcgis/core/Graphic.js";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
-import {retornaListAreaCode} from "../Consultas.js";
+import { retornaListAreaCode } from "../Consultas.js";
 import createFeature from "./createFeatures.js";
 import Intersection from "./Intersection.js";
 
 
 class loadSHPinFeaturelayer {
-  constructor(view, map, userApp, appManager) {
+  constructor(view, map, userApp, appManager,projeto,Documents) {
     this.view = view;
     this.map = map;
     this.userApp = userApp;
     this.appManager = appManager;
+    this.projeto = projeto;
+    if(Documents) this.Document = Documents;
+    else this.Document = document;
   }
 
-  #addShapefileToMap(featureCollection, map, view, document) {
+  #addShapefileToMap(featureCollection, map) {
     let sourceGraphics = [];
 
     const layers = featureCollection.layers.map((layer) => {
@@ -35,35 +38,35 @@ class loadSHPinFeaturelayer {
       return featureLayer;
     });
     map.addMany(layers);
-    view.goTo(sourceGraphics)
+    this.view.goTo(sourceGraphics)
       .catch((error) => {
         if (error.name != "AbortError") {
           console.error(error);
         }
       });
 
-    document.getElementById('upload-status').innerHTML = "";
+    this.Document.getElementById('upload-status').innerHTML = "";
   }
 
-  async #generateFeaturesFromSHP(response, appManager, userApp, projeto) {
+  async #generateFeaturesFromSHP(featureCollection) {
     let addFeatures = [];
-    let hasAreaCode = response.data.featureCollection.layers[0].layerDefinition.fields.some(field => field.name === 'area_code');
+    let hasAreaCode = featureCollection.layers[0].layerDefinition.fields.some(field => field.name === 'area_code');
     if (hasAreaCode) {
-      const propsPedidos = response.data.featureCollection.layers[0].featureSet.features;
-      retornaListAreaCode(appManager.Projetos[projeto].url, true, 3).
+      const propsPedidos = featureCollection.layers[0].featureSet.features;
+      retornaListAreaCode(this.appManager.Projetos[this.projeto].url, true, 3).
         then(async (propsProjetos) => {
-          let features = response.data.featureCollection.layers[0].featureSet.features.map(feature => {
-            feature.attributes.Responsavel_Topografia = userApp.userName;
-            feature.attributes.Responsavel_Topografia_ID = userApp.userId;
+          let features = featureCollection.layers[0].featureSet.features.map(feature => {
+            feature.attributes.Responsavel_Topografia = this.userApp.userName;
+            feature.attributes.Responsavel_Topografia_ID = this.userApp.userId;
             feature.attributes.TipoDeOperacaoNaBase = 'Edicao';
-            generateFieldIntersection(feature, projeto, propsPedidos, propsProjetos);
+            generateFieldIntersection(feature, this.projeto, propsPedidos, propsProjetos);
             feature.rings = feature.geometry.rings;
             return feature;
           });
-          const returnEditFeatures = new createFeature(features, features[0].geometry.spatialReference);
-          let feat = await returnEditFeatures.returnEditFeatures(features, null, features[0].geometry.spatialReference);
-          addFeatures = addFeatures.concat(feat);
         })
+      //ApplyEdits
+
+
     }
     else {
       console.log('No layers have the name area_code');
@@ -84,7 +87,7 @@ class loadSHPinFeaturelayer {
         else {
           //Verify if has intersection with the Project Layer
           
-          const results = intersection.verifyIntersect1ToN(feature.geometry, propsProjetos, 'area_code');
+          const results = intersection.verifyIntersect1ToN(feature.geometry, propsProjetos, ['area_code'],['area_code']);
           let index = results.findIndex(obj => obj.area_code === feature.attributes.area_code);
           if (index !== -1) { let removedObject = results.splice(index, 1)[0]; }
           if (results.length > 0) {
@@ -101,7 +104,8 @@ class loadSHPinFeaturelayer {
       }
       //Verify if has intersection with the Layer itself
 
-      const resultsPedidos = intersection.verifyIntersect1ToN(feature.geometry, propsPedidos, 'area_code');
+      const resultsPedidos = await intersection.verifyIntersect1ToN(feature.geometry, propsPedidos, ['area_code'],['area_code']);
+      
       if (resultsPedidos.length > 0) {
         feature.attributes.erro = 'O layer se auto-intersecta'
         feature.attributes.interseccoes = JSON.stringify(resultsPedidos);
@@ -112,19 +116,19 @@ class loadSHPinFeaturelayer {
     }
   }
 
-  async #generateFeatureCollection(fileName, view, portalUrl) {
+  async #generateFeatureCollection(fileName, portalUrl = "https://www.arcgis.com") {
       let name = fileName.split(".");
       // Chrome adds c:fakepath to the value - we need to remove it
       name = name[0].replace("c:\\fakepath\\", '');
 
-      document.getElementById('upload-status').innerHTML = '<b>Loading </b>' + name;
+      this.Document.getElementById('upload-status').innerHTML = '<b>Loading </b>' + name;
 
 
       // define the input params for generate see the rest doc for details
       // https://developers.arcgis.com/rest/users-groups-and-items/generate.htm
       const params = {
         'name': name,
-        'targetSR': view.spatialReference,
+        'targetSR': this.view.spatialReference,
         'maxRecordCount': 1000,
         'enforceInputFileSizeLimit': true,
         'enforceOutputJsonSizeLimit': true
@@ -143,52 +147,51 @@ class loadSHPinFeaturelayer {
       };
 
       // use the REST generate operation to generate a feature collection from the zipped shapefile
-      request(portalUrl + '/sharing/rest/content/features/generate', {
+      return request(portalUrl + '/sharing/rest/content/features/generate', {
         query: myContent,
-        body: document.getElementById('uploadForm'),
+        body: this.Document.getElementById('uploadForm'),
         responseType: 'json'
       })
         .then((response) => {
           const layerName = response.data.featureCollection.layers[0].layerDefinition.name;
-          document.getElementById('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
+          this.Document.getElementById('upload-status').innerHTML = '<b>Loaded: </b>' + layerName;
           return response
         })
         .catch(errorHandler);
 
 
       function errorHandler(error) {
-        document.getElementById('upload-status').innerHTML =
+        this.Document.getElementById('upload-status').innerHTML =
           "<p style='color:red;max-width: 500px;'>" + error.message + "</p>";
       }
   }
     
-  async loadShp(document=document) {
+  async loadShp() {
     const portalUrl = "https://www.arcgis.com";
 
-            document.getElementById("uploadForm").addEventListener("change", async(event) => {
+            this.Document.getElementById("uploadForm").addEventListener("change", async(event) => {
               const fileName = event.target.value.toLowerCase();
       
               if (fileName.indexOf(".zip") !== -1) {//is file a zip - if not notify user
                   
-                const response=await this.generateFeatureCollection(fileName)
-                  
-                  if(this.isChecked) this.generateFeaturesFromSHP(response.data.featureCollection,this.map,this.view);
-                  else this.addShapefileToMap(response.data.featureCollection,this.map,this.view);
-                  
+                const response=await this.#generateFeatureCollection(fileName)  
+                if(this.isChecked) this.#generateFeaturesFromSHP(response.data.featureCollection);
+                else this.#addShapefileToMap(response.data.featureCollection,this.map,this.view);
+                
               }
               else {
-                document.getElementById('upload-status').innerHTML = '<p style="color:red">Add shapefile as .zip file</p>';
+                this.Document.getElementById('upload-status').innerHTML = '<p style="color:red">Add shapefile as .zip file</p>';
               }
             });
       
-            const fileForm = document.getElementById("mainWindow");
+            const fileForm = this.Document.getElementById("mainWindow");
       
             const expand = new Expand({
               expandIcon: "upload",
-              view: view,
+              view: this.view,
               content: fileForm
             });  
-            view.ui.add(expand, "bottom-right");
+            this.view.ui.add(expand, "bottom-right");
   }  
 }
 

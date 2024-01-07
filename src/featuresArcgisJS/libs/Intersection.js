@@ -21,6 +21,8 @@ class Intersection {
    * Retornando as geometrias que intersectam com area e as chaves que foram passadas
    * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
    * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
+   * @param {Array} chaves - Chaves de feat
+   * @param {Array} chavesIntersect - Chaves de featureData
   */
   async verifyIntersect1ToN(feat, featureData, chaves = null, chavesIntersect = null) {
     // feat é 1
