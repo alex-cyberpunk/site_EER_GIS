@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "mongodb.mongodb-vscode"
+        "mongodb.mongodb-vscode",
+        "alexkrechik.cucumberautocomplete"
     ]
 }

@@ -198,5 +198,24 @@ async function featureLayerToSHP(layer,projeto,token,outFields,objectIds=null) {
   });
 
 }
+async function findIntersections(appManager,projetos,layerId,layerIdIntersect,chaves,chavesIntersect) {
+  let intersectingFeatures = [];
+  let propIntersect;
 
+  for (let nomeProjeto of projetos) {
+    //Read the feature layers of the project
+    const props = await retornaListAreaCode(this.appManager.Projetos[this.projeto].url, true, layerId)
+    if(layerIdIntersect!==layerId) propIntersect = await retornaListAreaCode(appManager.Projetos, true, nomeProjeto,layerIdIntersect);
+    else propIntersect=props;
+
+    //Find the intersections
+    intersectingFeatures=verifyIntersectNToN(props, propIntersect,chaves,chavesIntersect);
+    
+    //Convert geojson to excel and download in the browser
+  
+  }
+
+ return intersectingFeatures;
+  
+}
 export {featureLayerToKML,featureLayerToSHP}
