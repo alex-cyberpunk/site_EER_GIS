@@ -50,21 +50,24 @@ class loadSHPinFeaturelayer {
 
   async #generateFeaturesFromSHP(featureCollection) {
     let addFeatures = [];
+    let addFeat;
     let hasAreaCode = featureCollection.layers[0].layerDefinition.fields.some(field => field.name === 'area_code');
     if (hasAreaCode) {
       const propsPedidos = featureCollection.layers[0].featureSet.features;
       retornaListAreaCode(this.appManager.Projetos[this.projeto].url, true, 3).
         then(async (propsProjetos) => {
           featureCollection.layers[0].featureSet.features.map(feature => {
-            feature.attributes.Responsavel_Topografia = this.userApp.userName;
-            feature.attributes.Responsavel_Topografia_ID = this.userApp.userId;
-            feature.attributes.TipoDeOperacaoNaBase = 'Edicao';
-            generateFieldIntersection(feature, this.projeto, propsPedidos, propsProjetos);
-            feature.rings = feature.geometry.rings;
-            return feature;
-          });
-        console.log(featureCollection.layers[0].featureSet.features);   
+            addFeat={attributes:{   area_code : feature.attributes.area_code,
+                                    Responsavel_Topografia: this.userApp.userName,
+                                    Responsavel_Topografia_ID: this.userApp.userId,
+                                    TipoDeOperacaoNaBase : 'Edicao' },
+                      geometry : feature.geometry}            
+            generateFieldIntersection(addFeat, this.projeto, propsPedidos, propsProjetos);
+            addFeatures.push(addFeat);
+          });   
         })
+      
+      return(addFeatures);  
       //ApplyEdits
 
 
@@ -106,7 +109,6 @@ class loadSHPinFeaturelayer {
       //Verify if has intersection with the Layer itself
 
       const resultsPedidos = await intersection.verifyIntersect1ToN(feature.geometry, propsPedidos, ['area_code'],['area_code']);
-      
       if (resultsPedidos.length > 0) {
         feature.attributes.erro = 'O layer se auto-intersecta'
         feature.attributes.interseccoes = JSON.stringify(resultsPedidos);
@@ -167,33 +169,40 @@ class loadSHPinFeaturelayer {
       }
   }
     
-  async loadShp() {
-    const portalUrl = "https://www.arcgis.com";
-
-            this.Document.getElementById("uploadForm").addEventListener("change", async(event) => {
-              const fileName = event.target.value.toLowerCase();
-      
-              if (fileName.indexOf(".zip") !== -1) {//is file a zip - if not notify user
-                  
-                const response=await this.#generateFeatureCollection(fileName)  
-                if(this.isChecked) this.#generateFeaturesFromSHP(response.data.featureCollection);
-                else this.#addShapefileToMap(response.data.featureCollection,this.map,this.view);
-                
-              }
-              else {
-                this.Document.getElementById('upload-status').innerHTML = '<p style="color:red">Add shapefile as .zip file</p>';
-              }
-            });
-      
-            const fileForm = this.Document.getElementById("mainWindow");
-      
-            const expand = new Expand({
-              expandIcon: "upload",
-              view: this.view,
-              content: fileForm
-            });  
-            this.view.ui.add(expand, "bottom-right");
-  }  
+  loadShp() {
+    return new Promise((resolve, reject) => {
+      this.Document.getElementById("uploadForm").addEventListener("change", async(event) => {
+        const fileName = event.target.value.toLowerCase();
+  
+        if (fileName.indexOf(".zip") !== -1) {
+          try {
+            const response = await this.#generateFeatureCollection(fileName);
+            let result;
+            if(this.isChecked) {
+              result = await this.#generateFeaturesFromSHP(response.data.featureCollection);
+            } else {
+              this.#addShapefileToMap(response.data.featureCollection,this.map,this.view);
+            }
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        } else {
+          this.Document.getElementById('upload-status').innerHTML = '<p style="color:red">Add shapefile as .zip file</p>';
+          reject(new Error('Invalid file type'));
+        }
+      });
+  
+      const fileForm = this.Document.getElementById("mainWindow");
+  
+      const expand = new Expand({
+        expandIcon: "upload",
+        view: this.view,
+        content: fileForm
+      });  
+      this.view.ui.add(expand, "bottom-right");
+    });
+  } 
 }
 
     

@@ -11,8 +11,6 @@
 //Mock retornaListAreaCode 
 
 import loadSHPinFeaturelayer from '../../libs/widgetUploadSHP.js';
-import Intersection from "../../libs/Intersection.js";
-import createFeature from "../../libs/createFeatures.js";
 import { readFile } from 'fs/promises';
 
 jest.mock('../../Consultas.js', () => {
@@ -20,22 +18,20 @@ jest.mock('../../Consultas.js', () => {
   const path = require('path');
 
   const jsonPath = path.resolve(__dirname, '../mocks/features/Feature_layers/Areas.json');
-  const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-  
+    
   //Flag in the PROP-SGR-0058
-  let filteredFeatures = jsonData.features.
-                                filter(feature => 
-                                feature.attributes.
-                                area_code === "PROP-SGR-0058");
-        
-  filteredFeatures.forEach(feature => {
-                              if (feature.attributes.area_code === "PROP-SGR-0058") {
-                                  feature.geometry = "PROP-SGR-0058";
-                              }});
+  const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+   jsonData.features.map(feature => {
+    if (feature.attributes.area_code === 'PROP-SGR-0058') {
+      feature.geometry = 'PROP-SGR-0058';
+    }
+    return feature;
+  });
   return {
     retornaListAreaCode: jest.fn((url, bool, num) => {
+      console.log("url", url);
       if (bool === true && num === 3) {
-        return Promise.resolve(jsonData);
+        return Promise.resolve(jsonData.features);
       } else {
         return Promise.reject(new Error('Invalid arguments'));
       }
@@ -162,7 +158,6 @@ jest.mock('@arcgis/core/request.js', () => {
   
   const jsonPath = path.resolve(__dirname, '../mocks/features/response.data-request-widgetSHP.json');
   const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-    console.log(jsonData);
    jsonData.featureCollection.layers[0].featureSet.features.map(feature => {
     if (feature.attributes.area_code === 'PROP-JAG-0574') {
       feature.geometry = 'PROP-JAG-0574';
@@ -170,41 +165,50 @@ jest.mock('@arcgis/core/request.js', () => {
     if(feature.attributes.area_code === 'PROP-JAG-0415') {
       feature.geometry = 'PROP-JAG-0415';
     }
+    if(feature.attributes.area_code === 'PROP-JAG-0359') {
+      feature.geometry = 'PROP-JAG-0359';
+    }
     return feature;
   });
 
   return jest.fn().mockImplementation((url, options) => {
-    if (url.includes('/sharing/rest/content/features/generate') && options.responseType === 'json') {
-      return Promise.resolve({data: jsonData});
-    } else {
-      return Promise.reject(new Error('Invalid URL or options'));
+    if(typeof url==='string'){
+      if (url.includes('/sharing/rest/content/features/generate') && options.responseType === 'json') {
+        return Promise.resolve({data: jsonData});
+      } else {
+        return Promise.reject(new Error('Invalid URL or options'));
+      }
     }
+    else{
+      return Promise.resolve({data: jsonData});
+    }
+    
   });
 });   
 jest.mock('../../libs/Intersection.js', () => {
   return jest.fn().mockImplementation(() => {
     return {
       verifyIntersect1ToN: jest.fn((geometry, featureGeometry) => {
-        if (geometry === "PROP-JAG-0339" && featureGeometry === "PROP-SGR-0058" ) {
+        //console.log(featureGeometry[1].attributes);
+        if (geometry === "PROP-JAG-0359" && (featureGeometry[1].attributes.area_code).includes("SGR")) {
           return [{
-            area_code: "PROP-JAG-0339",
+            area_code: "PROP-JAG-0359",
             areaPlanar: 2,
             area_code_intersect: "PROP-SGR-0058"
           }];
         }
-        if (geometry === "PROP-JAG-0415" && featureGeometry === "PROP-JAG-0574" ) {
+        if (geometry === "PROP-JAG-0415" && (featureGeometry[1].attributes.area_code).includes("JAG")) {
           return [{
             area_code: "PROP-JAG-0415",
             areaPlanar: 2,
             area_code_intersect: "PROP-JAG-0574"
           }];
         }
-        //A polygon always intersect itself , but its expected that not appear in results
-        if (geometry === "PROP-JAG-0415" && featureGeometry === "PROP-JAG-0415" ) {
+        if (geometry === "PROP-JAG-0574" && (featureGeometry[1].attributes.area_code).includes("JAG")) {
           return [{
             area_code: "PROP-JAG-0415",
             areaPlanar: 2,
-            area_code_intersect: "PROP-JAG-0415"
+            area_code_intersect: "PROP-JAG-0574"
           }];
         }
         else return [];
@@ -271,8 +275,40 @@ describe('loadSHPinFeaturelayer', () => {
 
   it('should not call addShapefileToMap when isChecked is true', async () => {
     instance.isChecked = true;
-    await instance.loadShp();
-    expect(instance.addShapefileToMap).not.toHaveBeenCalled();
+    const featuresResult = await instance.loadShp();
+    console.log("featuresResult", featuresResult);
+    
+    //In This simulations, the features that intersect with the project are:
+    //PROP-JAG-0359 and PROP-SGR-0058 in the analaysis project
+    //PROP-JAG-0415 and PROP-JAG-0574 of himself
+      
+    expect(featuresResult[184].attributes.area_code).toEqual('PROP-JAG-0359');
+    expect(featuresResult[184].attributes.erro).toEqual('O layer Intersect com o projeto');
+    expect(featuresResult[184].interseccoes).
+    toEqual([{
+      area_code: "PROP-JAG-0359",
+      areaPlanar: 2,
+      area_code_intersect: "PROP-SGR-0058"
+    }])
+
+    expect(featuresResult[457].attributes.area_code).toEqual('PROP-JAG-0415');
+    expect(featuresResult[457].attributes.erro).toEqual('O layer se auto-intersecta');
+    expect(featuresResult[457].interseccoes).
+    toEqual([{
+      area_code: "PROP-JAG-0415",
+      areaPlanar: 2,
+      area_code_intersect: "PROP-JAG-0574"
+    }])
+
+    expect(featuresResult[654].geometry).toEqual('PROP-JAG-0574');
+    expect(featuresResult[654].attributes.erro).toEqual('O layer Intersect com o projeto');
+    expect(featuresResult[654].interseccoes).
+    toEqual([{
+      area_code: "PROP-JAG-0415",
+      areaPlanar: 2,
+      area_code_intersect: "PROP-JAG-0574"
+    }])
+
   });
 
   
