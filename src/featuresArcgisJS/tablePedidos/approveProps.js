@@ -1,7 +1,9 @@
 import  {retornaListAreaCode,loadLayer,applyEditsToLayer} from '../Consultas.js'
 import { callAlert } from "../../pages/sharedComponents/SucessMessage.js"
 import axios from 'axios';  
+import LayerEditor from '../libs/LayerEditor.js'
 
+//Create an new area_code for the polygon
 async function retornaNovaAreaCode(nomeProjeto,layerId, projetos) {
   let newAreaCode;
   queryFeature(featureLayer,whereClause,returnGeometry=false,outFields= ["*"])
@@ -32,19 +34,13 @@ async function retornaNovaAreaCode(nomeProjeto,layerId, projetos) {
   })
     
     
-  }  
+}  
 function handleApprove (objectIds,layer,appManager,userId,key,userType,Analise) {
       if (objectIds.length > 0){
           callAlert(`Esperando verificação...`,'Alert','Waiting');
           let editfeature,url,layerId;  
-          layer
-          .queryFeatures({
-              objectIds: objectIds,
-              returnGeometry: true,
-              outFields: ["*"]
-          })
-          .then((results) => {
-            console.log('resultados do query')
+          queryFeature(layer, "1=1", objectIds, ["*"]).
+          then(async(results) => {
               results.features.forEach((feature) => {
                 const geometryFeature = feature.geometry; 
                 const nomeProjeto=feature.attributes.Projeto;
@@ -54,80 +50,113 @@ function handleApprove (objectIds,layer,appManager,userId,key,userType,Analise) 
                 if(userType==='Topografia' && editfeature.attributes.Analise==='Topografia')
                   {callAlert(` Propriedade precisa ter interseccoes verificadas `,'Alert','Warning');}
                 else{
-                  console.log('entrou no else')
                   editfeature.attributes.Analise=Analise;
-                  //debugger
-                  //Apenas o lider da topografia pode aprovar a area ou seja criar o area_code
+                  
                   if(userType==='Lider Topografia'){
                     
-                    layerId=3;
-                    
-                    //Operacao de Inclusao
-                    if(editfeature.attributes.TipodeOperacaonabase==='Inclusao'){
+                    layerId=3;//Areas
+                    //Only the 'Lider Topografia" can, add, update or exclude areas  
+                    let features;
+                    switch(editfeature.attributes.TipodeOperacaonabase){
+                      
+                      case 'Inclusao':
                         retornaNovaAreaCode(nomeProjeto,layerId, appManager.Projetos).
                         then((newAreaCode)=>{
-                          editfeature.attributes.area_code=newAreaCode;
-                          editfeature.attributes.numPedido=editfeature.attributes.OBJECTID;
-                          //delete editfeature.attributes.OBJECTID;
-                          delete editfeature.attributes.GlobalID;
+                          features=editfeature;
+                          features.attributes.area_code=newAreaCode;
+                          features.attributes.numPedido=editfeature.attributes.OBJECTID;
+                          delete features.attributes.GlobalID;
                           url=appManager.Projetos[nomeProjeto].url;
-                          editsToLayer([editfeature],url,layerId,key,userId,
-                            {action:"Inserir",featureLayer:nomeProjeto,userId:userId},
-                            "add",appManager.mapaPedidos.url,0,[editfeature])
+                          const layerEditorClass = new LayerEditor(
+                            url, // url
+                            layerId, // layerId
+                            userId, // userId
+                            true, // sendEmail
+                            true, // sendLog
+                            axios // axios
+                          );
+                          layerEditorClass.editFeatures(features, 
+                                                        'add',
+                                                        key,
+                                                        {action:"Inserir",featureLayer:nomeProjeto,userId:userId});  
                         })  
                       
-                    }
-                    //Operacao de Edicao
-                    else if (editfeature.attributes.TipodeOperacaonabase==='Edicao'){
-                      url=appManager.Projetos[nomeProjeto].url;
-                      loadLayer(null, url, layerId).then( async(featureLayer) => {
-                        const query = featureLayer.createQuery();
-                        query.where = "area_code = '" + editfeature.attributes.area_code + "'"; // Add this line
-                        const featureSet = await featureLayer.queryFeatures(query);
-                        const features = featureSet.features;
-                        features[0].geometry=editfeature.geometry;
-                        editsToLayer(features[0],url,layerId,key,userId,
-                          {action:"Editar",featureLayer:nomeProjeto,userId:userId},
-                          "update",appManager.mapaPedidos.url,0,features)
-                      
-                      })
-                      
-                    }
-                    //Operacao de Inutilizacao
-                    else if (editfeature.attributes.TipodeOperacaonabase==='Inutilizacao'){
-                      url=appManager.Projetos[nomeProjeto].url;
-                      loadLayer(null, url, layerId).then( async(featureLayer) => {
-                        const query = featureLayer.createQuery();
-                        query.where = "area_code = '" + editfeature.attributes.area_code + "'"; // Add this line
-                        const featureSet = await featureLayer.queryFeatures(query);
-                        const features = featureSet.features;
+                        break;
+                      case 'Edicao':
+                        url=appManager.Projetos[nomeProjeto].url;
+                        const where = "area_code = '" + editfeature.attributes.area_code + "'"; // Add this line
+                        retornaListAreaCode(this.url, true, 3,where).
+                        then( async(props) => {  
+                          features = props.features;
+                          features[0].geometry=editfeature.geometry;
+                          
+                          const layerEditorClass = new LayerEditor(
+                              url, // url
+                              layerId, // layerId
+                              userId, // userId
+                              true, // sendEmail
+                              true, // sendLog
+                              axios // axios
+                            );
+                            layerEditorClass.editFeatures(features, 
+                                                          'update',
+                                                          key,
+                                                          {action:"Editar",featureLayer:nomeProjeto,userId:userId});  
+  
+                        
+                        })
+                        break;
+                      case 'Inutilizacao':
+                        url=appManager.Projetos[nomeProjeto].url;
+                      retornaListAreaCode(this.url, true, 3,where).
+                      then( async(props) => {  
+                        features = props.features;
                         features[0].geometry=editfeature.geometry;
                         editsToLayer(features,url,layerId,key,userId,
-                          {action:"Excluir",featureLayer:nomeProjeto,userId:userId,geometry:editfeature.geometry},
-                          "delete",appManager.mapaPedidos.url,0,features)
-                      
+                                                    "delete",appManager.mapaPedidos.url,0,features)
                       })
+                      const layerEditorClass = new LayerEditor(
+                        url, // url
+                        layerId, // layerId
+                        userId, // userId
+                        true, // sendEmail
+                        true, // sendLog
+                        axios // axios
+                      );
+                      layerEditorClass.editFeatures(features, 
+                                                    'remove',
+                                                    key,
+                                                    {action:"pedido concluido",featureLayer:'Pedidos',userId:userId,geometry:features.geometry});  
+    
                     }
+                    const layerEditorClass = new LayerEditor(
+                      appManager.mapaPedidos.url, // url
+                      0, // layerId
+                      userId, // userId
+                      false, // sendEmail
+                      true, // sendLog
+                      axios // axios
+                    );
+                    layerEditorClass.editFeatures(features, 
+                                                  'remove',
+                                                  key,
+                                                  {action:"Excluir",featureLayer:nomeProjeto,userId:userId,geometry:editfeature.geometry});  
+                  
+                  }  
                     
-                  }
                   else {
+                    //Make modifications in Pedidos
                     url = appManager.mapaPedidos.url;
                     layerId=0;
                     editsToLayer(editfeature, url,layerId,key,userId,
                       {action:"Aprovar",featureLayer:"Mapa Pedidos",userId:userId},
                       "update")
                   }
-                     
                 }
-                
               });
-              
             });
-            }
-  
+          }
 }
-
-
 function approveAreas(objectIds,layer,userApp,appManager){
   let key,Analise;
   switch(userApp.userType){
@@ -153,14 +182,11 @@ function approveAreas(objectIds,layer,userApp,appManager){
   }
   handleApprove(objectIds, layer, appManager, userApp.userId, key, userApp.userType,Analise);
 }
-
-
 function addPropProjeto(featureTable,layer,userApp,appManager) {
   featureTable.when().then(() => {
   approveAreas(featureTable.highlightIds.items,layer,userApp,appManager)
   });
 }
-
 // reprovacao
 function handleReprove (objectIds,layer,appManager,userId,key,userType,Analise) {
     if (objectIds.length > 0)///verify object 
@@ -204,8 +230,6 @@ function handleReprove (objectIds,layer,appManager,userId,key,userType,Analise) 
       }
 
 }
-
-
 function reproveAreas(objectIds,layer,userApp,appManager){
   let key,Analise;
   switch(userApp.userType){
@@ -231,8 +255,6 @@ function reproveAreas(objectIds,layer,userApp,appManager){
   }
   handleReprove(objectIds, layer, appManager, userApp.userId, key, userApp.userType,Analise);
 }
-
-
 function removePropTable(featureTable,layer,userApp,appManager) {
   featureTable.when().then(() => {
     reproveAreas(featureTable.highlightIds.items,layer,userApp,appManager)

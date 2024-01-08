@@ -8,7 +8,7 @@ Funcionalidade : Exportar arquivos para o usuario do fundiario
     possa usa-los em outros softwares.
     E alem disso visualizar as informacoes numa tabela antes de exportar os arquivos, 
     para que eu possa verificar se os dados estao corretos.
-    E tambem exportar os dados de sobreposicao de poligonos para que eu como topografo
+    E tambem exportar os dados de sobreposicao de um feature layer para que eu como topografo
     possa verificar se as sobreposicoes sao justificadas.
 
     Cenário:Exportar arquivos para o usuario do fundiario
@@ -17,7 +17,7 @@ Funcionalidade : Exportar arquivos para o usuario do fundiario
         Quando eu clicar no botao exportar
         Entao eu devo ver uma tabela com os dados do feature layer
         E um botao para exportar os dados para shapefile
-        E um botao para exportar os dados para kmz
+        E um botao para exportar os dados para kmz com pastas separadas por Status fundiario
     Cenário: Exportar sobreposicoes de poligonos
         Dad que eu esteja logado na aplicacao GIS
         E tenha um feature layer selecionado

@@ -8,10 +8,7 @@ import { callAlert } from '../../pages/sharedComponents/SucessMessage.js';
 
 
 class Intersection {
-  constructor(Projection=projection,GeometryEngine=geometryEngine) {
-    if(Projection){
-      this.projection = Projection;
-    }
+  constructor(GeometryEngine=geometryEngine) {
     if(GeometryEngine){
       this.geometryEngine = GeometryEngine;
     }
@@ -87,33 +84,35 @@ class Intersection {
   }
   /**
    * Verifica se uma geometria intersecta com um Conjunto de geometrias N->N
-   * @param {object} feat - Geometria no formato feature Layer (attributes, geometry)
+   * E necessario um objectId para cada geometria para nao comparar com ela mesma
+   * @param {object} props - Geometria no formato feature Layer (attributes, geometry)
+   * @param {object} propIntersect - Geometria no formato feature Layer (attributes, geometry)
+   * @param {Array} chaves - Chaves de props
+   * @param {Array} chavesIntersect - Chaves de propIntersect
   */
-  async verifyIntersectNToN(polygonGraphics, update, projetos, codes) {
+  async verifyIntersectNToN(props, propIntersect,  chaves, chavesIntersect) {
     let intersectingFeatures = [];
     let equalfeatures;
+    // If the same object, its necessary to eliminate the same object of the feature when analise
     if (propIntersect === props) equalfeatures = true;
     else equalfeatures = false;
+    
     props.forEach((prop) => {
-      // If equal , eliminate the same object of the json
-      // debugger
       if (equalfeatures) propIntersect = props.filter((item) => item.objectId != prop.objectId);
-      const results = this.findIntersect(prop, propIntersect, "intersections", chaves, chavesIntersect);
+      const results = this.verifyIntersect1ToN(prop, propIntersect, chaves, chavesIntersect);
       if (results.length > 0) {
-        // debugger
         results.forEach((itemIntersect, index) => {
           // Input attrbutes in the key
           let attributes = {};
           for (let chave in itemIntersect) {
             attributes[chave] = itemIntersect[chave];
           }
-
           intersectingFeatures.push(attributes);
         });
       }
     });
+    // If equal , eliminate the same object of the json
     if (equalfeatures) {
-      // Elimina duplicatas
       const combinacoesUnicas = new Set();
 
       const itensNaoDuplicados = [];
@@ -143,35 +142,34 @@ class Intersection {
    * @param {[object]} polygonGraphics - Array Geometria no formato feature Layer (attributes, geometry)
    * @param {string} urlprojeto - url do projeto
    * @param {Array} layerIds - layerIds do projeto 
+   * @param {Array} keyIntersect - Chaves principal do layer
+   * @param {number} wkid - wkid da geometria
   */
-  async verifyIntersectProjects(polygonGraphics, urlProjeto, layerIds) {
+  async verifyIntersectProjects(feat, urlProjeto, layerIds,keyIntersect,wkid=102100) {
     callAlert(`verificando Interseccao...`, "Alert", "Waiting");
-    let outSpatialReference = new SpatialReference({
-      wkid: 102100,
-    });
-
-    const promises = polygonGraphics.map(async (graphic) => {
-      const projectedGeometry = this.projection.project(graphic.geometry, outSpatialReference);
-      graphic.geometry = projectedGeometry;
-    });
-
-    let featureLayer;
-    let feature;
-    let feats;
+    
+    if(wkid!==102100) {
+      let outSpatialReference = new SpatialReference({
+        wkid: 102100,
+      });
+      const promises = feat.map(async (graphic) => {
+        const projectedGeometry = this.projection.project(graphic.geometry, outSpatialReference);
+        graphic.geometry = projectedGeometry;
+      });
+    }
+    
     
     const featureDataPromises = layerIds.map((layerId) => {
-      feature=new FeatureLoader(urlProjeto, layerId);
-      feature.loadLayer(urlProjeto, layerId).
-      then((featureLayer) => {
-        feats = queryFeature(featureLayer, '1=1', layerId);
-        return feats;
-        })
+      retornaListAreaCode(this.appManager.Projetos[this.projeto].url, true, layerId).
+      then(async (propsProjetos) => {
+        return propsProjetos
+      })
     });
     const featureDataList = await Promise.all(featureDataPromises);
 
     const intersectPromises = featureDataList
       .filter((featureData) => featureData.length > 0)
-      .map((featureData) => this.findIntersect(graphic.geometry, featureData,"numPedido" ,"linha_code"));
+      .map((featureData) => this.verifyIntersect1ToN(graphic.geometry, featureData,"numPedido" ,keyIntersect));
 
     if (intersectPromises.length === 0) {
       return false;

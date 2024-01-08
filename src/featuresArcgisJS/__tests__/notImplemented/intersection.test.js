@@ -9,6 +9,66 @@ jest.mock('@arcgis/core/geometry/SpatialReference.js', () => {
     return { wkid: 102100 };
   });
 });
+jest.mock('../../Consultas.js', () => {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const jsonPath = path.resolve(__dirname, '../mocks/features/Feature_layers/Areas.json');
+    
+  //Flag in the PROP-SGR-0058
+  const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+   jsonData.features.map(feature => {
+    if (feature.attributes.area_code === 'PROP-SGR-0058') {
+      feature.geometry = 'PROP-SGR-0058';
+    }
+    return feature;
+  });
+  return {
+    retornaListAreaCode: jest.fn((url, bool, layerId) => {
+      let path_,key;
+        switch(layerId){
+          case 0:
+            path = '../mocks/features/Feature_layers/Aeros.json';
+            key = 'aero_code';
+            break;
+          case 1:  
+            path = '../mocks/features/Feature_layers/Linhas_UFV.json';
+            key = 'linha_code';
+            break;
+          case 2: 
+            path = '../mocks/features/Feature_layers/Linhas_EOL.json';
+            key = 'linha_code';
+            break;
+          case 3:
+            path = '../mocks/features/Feature_layers/Areas.json';
+            key = 'area_code';
+            break;
+        }
+      const jsonPath = path.resolve(__dirname,path_);
+      const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      
+      //Mark flags in the desired features
+      jsonData.featureCollection.layers[0].featureSet.features.map(feature => {
+        if (feature.attributes[key] === 'PROP-JAG-0574') {
+          feature.geometry = 'PROP-JAG-0574';
+        }
+        if(feature.attributes[key] === 'PROP-JAG-0415') {
+          feature.geometry = 'PROP-JAG-0415';
+        }
+        if(feature.attributes[key] === 'PROP-JAG-0359') {
+          feature.geometry = 'PROP-JAG-0359';
+        }
+        return feature;
+      });  
+
+      if (bool === true && num === 3) {
+        return Promise.resolve(jsonData.features);
+      } else {
+        return Promise.reject(new Error('Invalid arguments'));
+      }
+    })
+  };
+});
 
 
 
@@ -45,7 +105,7 @@ describe("Intersection", () => {
             return graphic;
           })
         };
-        intersection = new Intersection(projectionMock,geometryEngineMock);
+        intersection = new Intersection(geometryEngineMock);
         const data = await readFile('./src/featuresArcgisJS/__tests__/mocks/coordinates/NAO-intersecta-featureLayer.json', 'utf8');
         const coordinates = JSON.parse(data);
         
@@ -127,12 +187,6 @@ describe("Intersection", () => {
         return props.features;
       });
 
-      jest.spyOn(feature, 'loadLayer').mockImplementation(
-        async (urlProjeto, layerId) => {
-        return new Promise((resolve, reject) => {
-          resolve(true)
-        })
-      });
   
       test("should return false because there is no intersection", async () => {
 
@@ -145,7 +199,9 @@ describe("Intersection", () => {
                               verifyIntersectProjects(
                                 [polygonGraphics], 
                                 'http://services6.arcgis.com/9kR1D0L6Y5TzrTfj',
-                                [1,2])
+                                [1,2],
+                                'linha_code',
+                                102100)
             
         // Assert
         expect(callAlert).toHaveBeenCalledWith(`verificando Interseccao...`, "Alert", 'Warning');
@@ -171,12 +227,16 @@ describe("Intersection", () => {
                               verifyIntersectProjects(
                                 [polygonGraphics], 
                                 'http://services6.arcgis.com/9kR1D0L6Y5TzrTfj',
-                                [1,2])
+                                [1,2],
+                                'linha_code',
+                                102100)
         // Assert
         expect(callAlert).toHaveBeenCalledWith(`verificando Interseccao...`, "Alert", 'Warning');
         expect(result).toEqual(true);
       });
     
-    })  
+    })
+    
+    describe.todo("verifyIntersectNToN")
 
 })    

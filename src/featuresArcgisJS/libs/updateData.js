@@ -26,7 +26,7 @@ class LayerEditor {
     * @param {["add","update","delete"]} operation type of operation to be performed
     * @returns {Promise} Promise with object id of the first feature edited and null if no feature was edited
     */
-  async editFeatures(edits,operation,keySendEmail) {
+  async editFeatures(edits,operation,keySendEmail,log) {
     let key;
     let features;
     switch (operation) {
@@ -74,7 +74,6 @@ class LayerEditor {
                 });
             }
             if (this.sendLog) {
-              const log=value.attributes;
               this.axios.post('http://localhost:3002/logReport',
                 { json: { ...log } })
                 .then(idLog => {

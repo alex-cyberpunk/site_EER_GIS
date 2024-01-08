@@ -6,9 +6,10 @@ Funcionalidade: Salvar Logs da aplicacao
     - Login do usuario na aplicacao
     - Logout do usuario na aplicacao
     - Quando um usario manda um pedido pelo formulario , resgistrando o tipo de pedido e o usuario que fez o pedido
-    - Quando o usuario reprova ou aprova um pedido , registrando o tipo de pedido e o usuario que fez a acao
-    
+    - Quando o usuario reprova ou aprova um pedido , registrando o tipo de pedido e o usuario que fez a acao e a geometria do pedido
+
   E possiveis erros e inconsistencias do sistema.   
-  Cenário: Logar no sistema
-    Dado que estou na página de login
-    Quando eu preencher o campo "email" com "
+  Cenário: Fiz uma acao desejada no sistema
+    Dado que estou logado na aplicacao
+    Quando eu faco uma acao desejada na aplicacao
+    Entao o sistema deve registrar a acao no log do banco de dados.

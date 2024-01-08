@@ -1,9 +1,6 @@
 import{lockFieldsTable,loadLayer,loadTable,view,findFeatLyr,hideFieldsTable} from "../Consultas.js"
 import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
 
-
-
-
 function projetoBox(view,projeto,map){
   //Encontra o componente que contem o grafico  
   const featureInUI = view.ui._components.find(component => component.widget && component.widget.graphic !== undefined)

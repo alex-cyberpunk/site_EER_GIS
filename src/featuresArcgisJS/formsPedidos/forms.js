@@ -265,10 +265,11 @@ function insertInutilizacao(updatedAreaCodeValue, nomeProjeto, appManager, updat
   layerEditorClass.editFeatures(addEdits, 'add',key);          
 }
 
-//Aguarda a execucao da verificacao de interseccao com buffers
+//Wait the verification of the intersection with teh buffers to insert the feature
 async function verifyBuffers(projetos,addEdits,updated,appManager,form,userApp) {
   const intersectClass = new Intersection();
-  const isAprovado = await intersectClass.verifyIntersectProjects(addEdits, appManager.Projetos, [3]);
+  //kmz has epsg 4326 for default
+  const isAprovado = await intersectClass.verifyIntersectProjects(addEdits, appManager.Projetos, [3],'area_code',4326);
   let edit,key;
   const fieldsOperations = new FieldsOperations(form);
 

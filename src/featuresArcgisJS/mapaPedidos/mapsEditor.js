@@ -1,7 +1,7 @@
 
 //Funcoes para refatorar
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
-import  {retornaListAreaCode,queryFeature} from './Consultas.js'
+import  {queryFeature} from './Consultas.js'
 import { callAlert } from "../pages/sharedComponents/SucessMessage.js"
 import Intersection from "../libs/Intersection.js";
 import LayerEditor from "../libs/updateData.js";
@@ -44,7 +44,7 @@ function printIntersection(editor,layer,appManager){
           const geometryFeature = results.features[0].geometry; 
           const nomeProjeto=results.features[0].attributes.Projeto;
           editfeature=results.features[0];
-          const intersections=await intersectClass.verifyIntersectProjects([geometryFeature],appManager.Projetos[nomeProjeto],[3]);
+          const intersections=await intersectClass.verifyIntersectProjects([geometryFeature],appManager.Projetos[nomeProjeto],[3],'area_code');
           
           if(intersections.length>0) callAlert(`Intersecta a(s) propriedade(s) de ${nomeProjeto}`,'Alert','Warning');
           else {
