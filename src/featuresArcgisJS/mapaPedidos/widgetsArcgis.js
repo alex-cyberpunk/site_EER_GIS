@@ -5,10 +5,10 @@ import BasemapGallery from "@arcgis/core/widgets/BasemapGallery";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import Legend from "@arcgis/core/widgets/Legend.js";
 import Editor from "@arcgis/core/widgets/Editor.js";
-import { printIntersection } from "../verifyIntersect.js";
+import { printIntersection } from "./mapsEditor.js";
 import Fullscreen from "@arcgis/core/widgets/Fullscreen.js";
 import CoordinateConversion from "@arcgis/core/widgets/CoordinateConversion.js";
-import {loadShp} from "./widgetUploadSHPS.js";
+import loadSHPinFeaturelayer from "../libs/widgetUploadSHPS.js";
 
 function fullScreen(view){
   const full = new Fullscreen({
@@ -143,12 +143,15 @@ function createProjetoBox(view){
 
   return feature;
 }
+function loadSHP(view,map,isChecked,userApp,appManager){
+  loadSHPinFeaturelayer(view,view.map,isChecked,userApp,appManager).loadShp();
+}
 function mapWidgets(view,layer,appManager,isChecked,userApp){
   createLayerList(view);   
   //addLegend(view);
   baseMaps(view);
   fullScreen(view);
-  loadShp(view,view.map,isChecked,userApp,appManager)
+  loadSHP(view,view.map,isChecked,userApp,appManager)
   coordinatesConversion(view);
   const feature=createProjetoBox(view);
   let editor = initializeSketch(view,layer);

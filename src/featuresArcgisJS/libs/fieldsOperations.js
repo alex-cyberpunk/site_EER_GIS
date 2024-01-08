@@ -64,3 +64,5 @@ class FieldOperations {
         this.feat.fields = this.feat.fields.filter(field => searchFields.includes(field.name));
     }
 }
+
+export default FieldOperations;

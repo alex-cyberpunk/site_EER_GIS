@@ -1,11 +1,14 @@
-import  {loadLayer,returnProjetos,retornaListAreaCode,returnEditFeatures,applyEditsToLayer,findField,hideFields,lockFieldsTable} from '../Consultas'
-import {convertKmlToGeoJson,convert2D} from './convertKMZData.js'
-import {verifyAprovacao} from "./flowJustifity.js"
+import  {retornaListAreaCode} from '../Consultas'
 import * as projection from "@arcgis/core/geometry/projection.js";
-import SpatialReference from "@arcgis/core/geometry/SpatialReference.js";
-//import {sendMessageWithTemplate} from '../email/sendEmail.js' 
+import SpatialReference from "@arcgis/core/geometry/SpatialReference.js"; 
 import axios from 'axios';
 import { callAlert } from '../../pages/sharedComponents/SucessMessage';
+import Intersection from '../libs/Intersection.js';
+import  convertKmlToGeoJson  from '../libs/convertKMZData.js';
+import createFeatureFromJSON from '../libs/createFeatures.js';
+import LayerEditor from '../libs/updateData.js';
+import FeatureLoader from '../libs/loadFeature.js';
+
 
 function createpopups(values,tipo_forms) {
   let string;
@@ -113,8 +116,6 @@ function createpopups(values,tipo_forms) {
   return true;
   
 }
-
-
 function writeAreasCodes(form,appManager){
   let currentProjetoValue = form.getValues().Projeto;
       findField(form,'area_code').then((field)=>{
@@ -231,38 +232,6 @@ function restauraCampos(forms,objectIds,url,campoJustificativa=false){
   
   
 }
-//Insere os poligonos no feature layer e notifica os usuarios
-function insertPolygon(addEdits,appManager,form,updated,userApp,key,url){
-  applyEditsToLayer(addEdits, appManager.formsPedidos.url,0,"add")
-      .then((results) => {  
-        if (results) { 
-          callAlert('Propriedade kml inserida no mapa','Alert','Success');
-          axios.post('http://localhost:3002/enviarEmail', 
-          {values:{ 
-            numPedido:results,
-            responsavelTopografia:updated.Responsavel_Topografia,
-            responsavelComercial:updated[appManager.formsPedidos.tipoResponsavel]},
-            userIds:[userApp.userId],key:key}).
-          then(teste => {
-            console.log(teste)
-            //resgister action in log
-            axios.post('http://localhost:3002/logReport',
-            {json:{
-              userId:userApp.userId,
-              userName:userApp.userName,
-              featureLayer:"Mapa Pedidos",
-              action:"Inserir",
-              ObjectID:results,
-            }}).
-            then(log=>{
-              console.log(log)
-            })
-            restauraCampos(form,results,url,true)
-          })
-        }
-          
-      });
-}
 async function insertEdition(addEdits,appManager,form,updated,userApp){
   let key;
   if(userApp.userType==='Topografia'){
@@ -271,65 +240,62 @@ async function insertEdition(addEdits,appManager,form,updated,userApp){
 
   else{key = "areaEdicaoComercial"}
   let url=appManager.formsPedidos.url;
-  insertPolygon(addEdits,appManager,form,updated,userApp,key,url)
+  const layerEditorClass = new LayerEditor(
+    url, // url
+    3, // layerId
+    userApp.userId, // userId
+    true, // sendEmail
+    true, // sendLog
+    axios // axios
+  );
+  layerEditorClass.editFeatures(addEdits, 'update');      
 }
 function insertInutilizacao(updatedAreaCodeValue, nomeProjeto, appManager, updated, form, userApp) {
   let addEdits;
-
-  retornaListAreaCode(appManager.Projetos, true, nomeProjeto, 3)
-    .then(async (props) => { // Make this function async
-      
-      for (let key in props) {
-        if (props[key].area_code === updatedAreaCodeValue) {
-          updated.area_code = props[key].area_code;
-          updated.Projeto = nomeProjeto;
-
-          let outSpatialReference = new SpatialReference({
-            wkid: 4326
-          });
-          props[key].geometry = projection.project(props[key].geometry, outSpatialReference)
-          
-          updated.rings = props[key].geometry.rings;
-
-          addEdits = await returnEditFeatures([updated], null) // Now you can use await here
-          
-        }
-      }
-    })
-    .then(() => {
-      let url = appManager.formsPedidos.url;
-      insertPolygon(addEdits, appManager, form, updated, userApp, "areaInutilizacaoTopografia", url)
-    });
-
+  retornaListAreaCode(appManager.Projetos[nomeProjeto], true, 3,`area_code = ${updatedAreaCodeValue}`)      
+  let url = appManager.formsPedidos.url;
+  const layerEditorClass = new LayerEditor(
+    appManager.formsPedidos.url, // url
+    3, // layerId
+    userApp.userId, // userId
+    true, // sendEmail
+    true, // sendLog
+    axios // axios
+  );
+  layerEditorClass.editFeatures(addEdits, 'add',key);          
 }
 
 //Aguarda a execucao da verificacao de interseccao com buffers
 async function verifyBuffers(projetos,addEdits,updated,appManager,form,userApp) {
-  const isAprovado = await verifyAprovacao(addEdits, updated, projetos);
+  const intersectClass = new Intersection();
+  const isAprovado = await intersectClass.verifyIntersectProjects(addEdits, appManager.Projetos, [3]);
   let edit,key;
-  findField(form,'Justificativa').then((field)=>{
+  const fieldsOperations = new FieldsOperations(form);
+
+  fieldsOperations.findField('Justificativa').then((field)=>{
     
     const Field=field
     edit=field.editable
     
     if (isAprovado || edit) {
       
-      if(edit){
-        key="areaNovaResources"
-        addEdits[0].attributes.Analise="Resources"
-        let url=appManager.formsPedidos.url;
-        insertPolygon(addEdits,appManager,form,updated,userApp,key,url)
-      }
-      else{
-        key="areaNovaTopografia"
-        addEdits[0].attributes.Analise="Topografia"
-        let url=appManager.formsPedidos.url;
-        insertPolygon(addEdits,appManager,form,updated,userApp,key,url)
-      }          
+      key="areaNovaTopografia"
+      addEdits[0].attributes.Analise="Topografia"
+      let url=appManager.formsPedidos.url;
+      const layerEditorClass = new LayerEditor(
+        url, // url
+        3, // layerId
+        userApp.userId, // userId
+        true, // sendEmail
+        true, // sendLog
+        axios // axios
+      );
+      layerEditorClass.editFeatures(addEdits, 'update',key);  
+        
 
     } else {
       callAlert("Essa propriedade precisa de uma justificativa para prosseguir",'Alert','Warning');
-      lockFieldsTable(form, ['Justificativa'], true);
+      fieldsOperations.lockFieldsTable(['Justificativa'], true);
     }
   });  
 }
@@ -344,10 +310,11 @@ function  handleSubmit(selectedFile,form,tipo_forms,userApp,appManager){
       updated.Analise='Topografia'
     }
 
-    //Verifica se os campos obrigatorios foram preenchidos
+    //Verify if the fields are filled
     if(createpopups(updated,tipo_forms)){
+
         updated.TipodeOperacaonabase=tipo_forms
-        //Preenche os campos de responsavel de acordo com o tipo de usuario 
+        //Every Topograhic user is responsible for one project 
         updated.Responsavel_Topografia=appManager.Projetos[updated.Projeto].Areas.Topografia 
         updated.ID_Responsavel_Topografia=appManager.Projetos[updated.Projeto].Areas.ID_Topografia 
         
@@ -358,7 +325,6 @@ function  handleSubmit(selectedFile,form,tipo_forms,userApp,appManager){
         
         //O campo de inutilizacao nao possui geometria
         if(tipo_forms==='Inutilizacao'){
-          //debugger
           insertInutilizacao(updated.area_code,updated.Projeto,appManager,updated,form,userApp)
         }
         else{
@@ -370,9 +336,7 @@ function  handleSubmit(selectedFile,form,tipo_forms,userApp,appManager){
             //Verifica se temos apenas uma prop no kmz
             if(geoJsonString.features.length==1){
               //converte para 3D->2D
-              const coordenadas2D=convert2D(geoJsonString)
-              debugger
-              updated.rings=coordenadas2D;
+              updated.geoemtry=geoJsonString;
               //Cria o objeto de features para inserir no feature layer
               const addEdits=  await returnEditFeatures([updated],coordenadas2D)
               if (tipo_forms==='Inclusao'){
@@ -390,11 +354,7 @@ function  handleSubmit(selectedFile,form,tipo_forms,userApp,appManager){
             }      
             })
             }
-          else{
-            //Caso nao selecione um arquivo para edicao 
-            //if(tipo_forms=='Edicao') insertInutilizacao(updated.area_code,updated.Projeto,appManager,updated,form,userApp)
-            createpopups({kml:' '},tipo_forms);
-          }
+          else{createpopups({kml:' '},tipo_forms);}
         }      
     }
     

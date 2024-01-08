@@ -16,6 +16,20 @@ class Intersection {
       this.geometryEngine = GeometryEngine;
     }
   }
+  //Convert date to string for fields in date format
+  async #convertToDate(timestamp){
+    const data = new Date(timestamp);
+
+    const dia = data.getDate().toString().padStart(2, '0');
+    const mes = (data.getMonth() + 1).toString().padStart(2, '0');
+    const ano = data.getFullYear();
+    const hora = data.getHours().toString().padStart(2, '0');
+    const minuto = data.getMinutes().toString().padStart(2, '0');
+    const segundo = data.getSeconds().toString().padStart(2, '0');
+
+    const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}:${segundo}`;
+    return dataFormatada;
+  }
   /**
    * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N
    * Retornando as geometrias que intersectam com area e as chaves que foram passadas
@@ -127,7 +141,8 @@ class Intersection {
    * Verifica se uma geometria intersecta com um Conjunto de geometrias 1->N com os layers dos projetos
    * @param {object} featureData - Array de geometrias no formato feature Layer (attributes, geometry)
    * @param {[object]} polygonGraphics - Array Geometria no formato feature Layer (attributes, geometry)
-   * @param {object} projeto - Chaves que serão retornadas 
+   * @param {string} urlprojeto - url do projeto
+   * @param {Array} layerIds - layerIds do projeto 
   */
   async verifyIntersectProjects(polygonGraphics, urlProjeto, layerIds) {
     callAlert(`verificando Interseccao...`, "Alert", "Waiting");

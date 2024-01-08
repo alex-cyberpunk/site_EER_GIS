@@ -22,14 +22,16 @@ async function queryByFieldValue_new(featureLayer,whereClause,returnGeometry=fal
     });
 }
 
-
-async function queryFeature(featureLayer,whereClause,returnGeometry=false,outFields= ["*"]) {
+/**
+ * Query a feature layer by a field value
+*/
+async function queryFeature(featureLayer,whereClause,objectIds=null,returnGeometry=false,outFields= ["*"]) {
   const query = {
     where: whereClause,
     outFields: outFields,
     returnGeometry: returnGeometry
   };
-  
+  if(objectIds) query.objectIds=objectIds;
   return featureLayer.queryFeatures(query)
     .then((results) => {
       if (results.features.length > 0) {
@@ -40,10 +42,10 @@ async function queryFeature(featureLayer,whereClause,returnGeometry=false,outFie
     });
 }
 
-async function retornaListAreaCode(url, geometria, layerId) {
+async function retornaListAreaCode(url, geometria, layerId,whereClause='1=1') {
   const featureLoader = new FeatureLoader();
   const featureLayer = await featureLoader.loadLayer(this.url, this.layerId);
-  queryByFieldValue(featureLayer,'1=1',returnGeometry=geometria,outFields= [key])
+  queryByFieldValue(featureLayer,whereClause,null,returnGeometry=geometria,outFields= [key])
 
 }
 // Operacoes dos feature layers dos Projetos

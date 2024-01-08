@@ -1,13 +1,16 @@
 import FeatureLoader from './loadFeature.js';
 
 class LayerEditor {
-  constructor(editfeature, url, layerId, operation,userId, sendEmail,sendLog,axios) {
-    this.editfeature = editfeature;
+  /**
+   * @param {Feature} editfeature feature to be edited
+   * @param {url} url of_featureLayer
+   * @param {string} layerId of the featureLayer
+  */
+  constructor(url, layerId,userId, sendEmail,sendLog,axios) {
     this.url = url;
     this.layerId = layerId;
     this.userId = userId;
     this.sendLog = sendLog;
-    this.operation = operation;
     this.axios = axios;
     this.sendEmail = sendEmail;
     
@@ -23,10 +26,10 @@ class LayerEditor {
     * @param {["add","update","delete"]} operation type of operation to be performed
     * @returns {Promise} Promise with object id of the first feature edited and null if no feature was edited
     */
-  async editFeatures(edits) {
+  async editFeatures(edits,operation,keySendEmail) {
     let key;
     let features;
-    switch (this.operation) {
+    switch (operation) {
       case 'add':
         features = { addFeatures: [edits] };
         key = 'addFeatureResults';
@@ -53,7 +56,7 @@ class LayerEditor {
           if (editsResult[key].length > 0) {
             const value=edits;
 
-            if (this.sendEmail) {
+            if (this.keySendEmail) {
               this.axios.post('http://localhost:3002/enviarEmail',
                 {
                   values: {
@@ -64,7 +67,7 @@ class LayerEditor {
                     responsavelComercial: value.attributes.Responsavel_Comercial,
                   },
                   userIds: [this.userId],
-                  key: this.key
+                  key: keySendEmail
                 })
                 .then(teste => {
                   console.log(teste);

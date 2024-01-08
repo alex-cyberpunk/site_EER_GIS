@@ -32,10 +32,7 @@ async function retornaNovaAreaCode(nomeProjeto,layerId, projetos) {
   })
     
     
-  }
-  
-
-  
+  }  
 function handleApprove (objectIds,layer,appManager,userId,key,userType,Analise) {
       if (objectIds.length > 0){
           callAlert(`Esperando verificação...`,'Alert','Waiting');

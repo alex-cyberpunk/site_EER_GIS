@@ -39,3 +39,5 @@ class createFeatureFromJSON{
         
     }
 }
+
+export default createFeatureFromJSON;
