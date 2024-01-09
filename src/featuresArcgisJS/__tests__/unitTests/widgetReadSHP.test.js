@@ -191,6 +191,7 @@ jest.mock('../../libs/Intersection.js', () => {
       verifyIntersect1ToN: jest.fn((geometry, featureGeometry) => {
         //console.log(featureGeometry[1].attributes);
         if (geometry === "PROP-JAG-0359" && (featureGeometry[1].attributes.area_code).includes("SGR")) {
+          
           return [{
             area_code: "PROP-JAG-0359",
             areaPlanar: 2,
@@ -198,17 +199,34 @@ jest.mock('../../libs/Intersection.js', () => {
           }];
         }
         if (geometry === "PROP-JAG-0415" && (featureGeometry[1].attributes.area_code).includes("JAG")) {
+          //Simulate if the feature intersect with himself
+          let hasPropJag0415 = featureGeometry.some(obj => obj.attributes.area_code === 'PROP-JAG-0415');
+
+          if (hasPropJag0415) {
+            return [{
+              area_code: "PROP-JAG-0415",
+              areaPlanar: 2,
+              area_code_intersect: "PROP-JAG-0574"
+            },
+            {
+              area_code: "PROP-JAG-0415",
+              areaPlanar: 2,
+              area_code_intersect: "PROP-JAG-0415"
+            }];
+          }  
+          else{
           return [{
             area_code: "PROP-JAG-0415",
             areaPlanar: 2,
             area_code_intersect: "PROP-JAG-0574"
           }];
         }
+        }
         if (geometry === "PROP-JAG-0574" && (featureGeometry[1].attributes.area_code).includes("JAG")) {
           return [{
-            area_code: "PROP-JAG-0415",
+            area_code: "PROP-JAG-0574",
             areaPlanar: 2,
-            area_code_intersect: "PROP-JAG-0574"
+            area_code_intersect: "PROP-JAG-0415"
           }];
         }
         else return [];
@@ -281,33 +299,22 @@ describe('loadSHPinFeaturelayer', () => {
     //In This simulations, the features that intersect with the project are:
     //PROP-JAG-0359 and PROP-SGR-0058 in the analaysis project
     //PROP-JAG-0415 and PROP-JAG-0574 of himself
+    //PROP-JAG-0415 and PROP-JAG-0415 of himself , expected to not be in the final result
       
-    expect(featuresResult[184].attributes.area_code).toEqual('PROP-JAG-0359');
-    expect(featuresResult[184].attributes.erro).toEqual('O layer Intersect com o projeto');
-    expect(featuresResult[184].interseccoes).
-    toEqual([{
-      area_code: "PROP-JAG-0359",
-      areaPlanar: 2,
-      area_code_intersect: "PROP-SGR-0058"
-    }])
+    expect(featuresResult[1].attributes.area_code).toEqual('PROP-JAG-0359');
+    expect(featuresResult[1].attributes.erro).toEqual('O layer Intersecta com o projeto');
+    expect(featuresResult[1].attributes.interseccoes).
+    toEqual(["PROP-SGR-0058"])
 
     expect(featuresResult[457].attributes.area_code).toEqual('PROP-JAG-0415');
     expect(featuresResult[457].attributes.erro).toEqual('O layer se auto-intersecta');
-    expect(featuresResult[457].interseccoes).
-    toEqual([{
-      area_code: "PROP-JAG-0415",
-      areaPlanar: 2,
-      area_code_intersect: "PROP-JAG-0574"
-    }])
+    expect(featuresResult[457].attributes.interseccoes).
+    toEqual(["PROP-JAG-0574"])
 
     expect(featuresResult[654].geometry).toEqual('PROP-JAG-0574');
-    expect(featuresResult[654].attributes.erro).toEqual('O layer Intersect com o projeto');
-    expect(featuresResult[654].interseccoes).
-    toEqual([{
-      area_code: "PROP-JAG-0415",
-      areaPlanar: 2,
-      area_code_intersect: "PROP-JAG-0574"
-    }])
+    expect(featuresResult[654].attributes.erro).toEqual('O layer se auto-intersecta');
+    expect(featuresResult[654].attributes.interseccoes).
+    toEqual(["PROP-JAG-0415"])
 
   });
 

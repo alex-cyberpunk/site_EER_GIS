@@ -90,13 +90,13 @@ class loadSHPinFeaturelayer {
         }
         else {
           //Verify if has intersection with the Project Layer
-          
-          const results = intersection.verifyIntersect1ToN(feature.geometry, propsProjetos, ['area_code'],['area_code']);
-          let index = results.findIndex(obj => obj.area_code === feature.attributes.area_code);
-          if (index !== -1) { let removedObject = results.splice(index, 1)[0]; }
+          let propsProjetoAnalisis = propsProjetos.filter(obj => obj.attributes.area_code !== feature.attributes.area_code);
+          let results = intersection.verifyIntersect1ToN(feature.geometry, propsProjetoAnalisis, ['area_code'],['area_code']);
+          results = results.filter(obj => obj.area_code !== obj.area_code_intersect);
+          results = results.map(obj => obj.area_code_intersect.toString());         
           if (results.length > 0) {
-            feature.attributes.erro = 'O layer Intersect com o projeto'
-            feature.attributes.interseccoes = JSON.stringify(results);
+            feature.attributes.erro = 'O layer Intersecta com o projeto'
+            feature.attributes.interseccoes = results;
           }
         }
 
@@ -107,11 +107,12 @@ class loadSHPinFeaturelayer {
         feature.attributes.erro = 'Fora do Padrao PROP-XXX-NNNN'
       }
       //Verify if has intersection with the Layer itself
-
-      const resultsPedidos = await intersection.verifyIntersect1ToN(feature.geometry, propsPedidos, ['area_code'],['area_code']);
+      let propsPedidosAnalisis = propsPedidos.filter(obj => obj.attributes.area_code !== feature.attributes.area_code);
+      let resultsPedidos = await intersection.verifyIntersect1ToN(feature.geometry, propsPedidosAnalisis, ['area_code'],['area_code']);
+      resultsPedidos = resultsPedidos.map(obj => obj.area_code_intersect.toString());
       if (resultsPedidos.length > 0) {
         feature.attributes.erro = 'O layer se auto-intersecta'
-        feature.attributes.interseccoes = JSON.stringify(resultsPedidos);
+        feature.attributes.interseccoes = resultsPedidos;
       }
 
       if (!feature.attributes.erro) feature.attributes.Analise = 'Verificado GIS';
