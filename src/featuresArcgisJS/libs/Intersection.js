@@ -43,16 +43,10 @@ class Intersection {
 
       const data = featureData;
       // Nos casos que nao procura interseccoes a prop pode nao ter area_code
-      let Geom;
       if (data) {
         //console.log("data", data);
         data.forEach(async(feature) => {
           let intersection =  this.geometryEngine.intersect(feature.geometry, feat.geometry);
-          if(feature.attributes.area_code==="PROP-SGR-0058") 
-          {
-            const geom=feature.geometry;
-
-            console.log("intersection", intersection)};
           if (intersection) {
             let area = this.geometryEngine.planarArea(intersection, "hectares");
             let attributes = {};
